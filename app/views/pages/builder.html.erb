@@ -1,0 +1,69 @@
+
+<div id="surveyContainer"></div>
+<script type='text/javascript' src='javascripts/steal/steal.js?surveybuilder,development'></script>
+
+<script language="javascript">
+
+	// Preview path
+	PREVIEW_PATH = 'http://localhost/surveyclienttest/survey';
+	
+	// Optional "exit" link
+	EXIT_PATH = 'http://localhost/';
+	EXIT_TEXT = 'Exit';
+
+	/**
+	 * Generic data connector for the builder.  Implement a version to 
+	 * fit whatever backend you want the builder to tie into.
+	 *	 
+	 */
+	var connector = {
+		/**
+		 * Basic implementation which saves the survey xml to browser storage.
+		 */											
+		save_survey: function(id, data, success, error) {
+			$.jStorage.set('surveyXML', data);
+			
+			//call success after a 1 second delay
+			setTimeout(success, 1000);
+			//error();  //uncomment this and comment out above to test error path
+		},
+		
+		/**
+		 *	Basic implementation which loads the survey xml from browser storage
+		 */
+		get_survey: function(id, success, error) {
+			var xmlDoc = null;
+			var survey = $.jStorage.get('surveyXML');
+			if (!survey) {
+				// provide a base definition if no survey found
+				survey = '<Survey><rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/"><Survey><surveyLine rdf:resource="#mainline"></surveyLine></Survey><Line rdf:about="#mainline"><dc:title>Main Section</dc:title></Line></rdf:RDF></Survey>';
+			}
+			// parse definition to an xmlDoc
+			if (window.DOMParser) {
+				parser=new DOMParser();
+				xmlDoc=parser.parseFromString(survey,"text/xml");
+			}
+			else { // Internet Explorer
+				xmlDoc=new ActiveXObject("Microsoft.XMLDOM");
+				xmlDoc.async="false";
+				xmlDoc.loadXML(survey); 
+			}
+			if (xmlDoc) {
+				success(xmlDoc);
+			}	
+			else {
+				error();
+			}
+		}
+   };
+
+   $(document).ready(function() {
+	   OpenAjax.hub.publish('survey.open', {'data_connector' : connector, 'id':1 });
+	   
+	   // show basic error message on ajax fails
+	   $('#survey').ajaxError(function(e, xhr, settings, exception) {
+			alert("Error while making call to " + settings.url + ": " + exception);
+		});
+   });
+
+</script>
