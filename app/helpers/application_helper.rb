@@ -2,12 +2,12 @@ module ApplicationHelper
   
    #Return the logo reference
    def logo
-    image_tag("logo.png", :alt => "Surveys App", :class => "round")
+    image_tag("logo.png", :alt => "Surveys Service", :class => "round")
    end
 
    # Return a title on a per-page basis.
    def title
-    base_title = "Surveys App"
+    base_title = "Surveys Service"
 
     if @title.nil?
       base_title
