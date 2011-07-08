@@ -40,5 +40,6 @@
 
 <% } %>
 
-<%= $.View("//survey/views/survey/footer.ejs", {survey:survey}) %>
-
+<% if (SHOW_FOOTER) { %>
+	<%= $.View("//survey/views/survey/footer.ejs", {survey:survey}) %>
+<% } %>

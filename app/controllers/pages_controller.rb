@@ -20,7 +20,8 @@ class PagesController < ApplicationController
   end
 
   def preview
-    @title = 'Survery Preview'
+    render :layout => 'surveypreview'  
+    @title = 'Survey Preview'
   end
       
 end
