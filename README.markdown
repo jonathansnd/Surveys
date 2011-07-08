@@ -1,5 +1,4 @@
-# Boolco Sample App
+# Surveys App
 
-This is the sample application for
-[*Ruby on Rails Tutorial: Learn Rails by Example*](http://railstutorial.org/)
-by [Michael Hartl](http://michaelhartl.com/).
+This is a survey builder app
+by [Jonathan Rico](http://jonathanrm.com/).
