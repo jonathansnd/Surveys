@@ -29,17 +29,17 @@ section h1 {
 /* Links */
 
 a {
-  color: #09c;
+  color: #000;
   text-decoration: none;
 }
 
 a:hover {
-  color: #069;
+  color: #aaa;
   text-decoration: underline;
 }
 
 a:visited {
-  color: #069;
+  color: #000;
 }
 
 /* Navigation */
@@ -71,10 +71,11 @@ nav ul li a {
 }
 
 nav ul li a:visited {
-  color: #09c;
+  color: #000;
 }
 
 nav ul li a:hover {
+  color: #aaa;
   text-decoration: underline;
 }
 
