@@ -37,6 +37,6 @@ ActiveRecord::Schema.define(:version => 20110710045904) do
     t.string   "sfdc_refresh_token"
   end
 
-  add_index "users", ["email"], :name => "index_users_on_email"
+  #add_index "users", ["email"], :name => "index_users_on_email"
 
 end
