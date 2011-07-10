@@ -14,14 +14,5 @@ class PagesController < ApplicationController
   def help
     @title = 'Help'
   end
-
-  def builder
-    @title = 'Survey Builder'
-  end
-
-  def preview
-    render :layout => 'surveypreview'  
-    @title = 'Survey Preview'
-  end
       
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110528214656) do
+ActiveRecord::Schema.define(:version => 20110710045904) do
 
   create_table "users", :force => true do |t|
     t.string   "name"
@@ -19,7 +19,22 @@ ActiveRecord::Schema.define(:version => 20110528214656) do
     t.datetime "updated_at"
     t.string   "encrypted_password"
     t.string   "salt"
-    t.boolean  "admin",              :default => false
+    t.boolean  "admin",                                   :default => false
+    t.string   "nickname"
+    t.string   "picture"
+    t.string   "thumbnail"
+    t.string   "user_id"
+    t.string   "language"
+    t.integer  "utcOffset",                :limit => 255
+    t.datetime "last_modified_date"
+    t.string   "profile"
+    t.boolean  "active",                   :limit => 255
+    t.string   "user_type"
+    t.string   "last_status_body"
+    t.datetime "last_status_created_date"
+    t.string   "org_id"
+    t.string   "sfdc_token"
+    t.string   "sfdc_refresh_token"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true

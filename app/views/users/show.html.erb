@@ -1,14 +1,51 @@
 <table class="profile" summary="Profile information">
 <tr>
 	<td class="main">
-		<h1>
-			<%= gravatar_for @user %>
-			<%= @user.name %>
-		</h1>
+
+		<div style="width:100%;">
+			<div style="width:220px;float:left;">
+				<%= image_tag(@userInfo["photo"]["largePhotoUrl"]+"?oauth_token="+ENV['sfdc_token'], :alt => @userInfo["name"], "class" => "glossy")%>
+			</div>
+			<div style="width:300px;float:left;">
+				<div><h1><%= @userInfo["name"] %></h1></div>
+				<div style="margin-left:10px;"><%= @userInfo["title"] %></div>
+				<br/>
+				<div>"<%= @userInfo["currentStatus"]["body"]["text"]%>"</div>
+			</div>
+		</div>
 	</td>
 	<td class="sidebar round">
-		<strong>Name</strong> <%= @user.name %><br />
-		<strong>URL</strong>  <%= link_to user_path(@user), @user %>
+		
+		<div><strong>About Me</strong></div>
+		<br/>
+		<div><i><%= @userInfo["aboutMe"] %> </i></div>
+		<br/>
+		<div><strong>Chatter : </strong> <a href="<%= ENV['sfdc_instance_url'] %>/<%= @userInfo["id"] %>" target="_blank">Full Profile</a></div>
+		<br/>
+		<div><strong>Name : </strong> <%= @userInfo["name"] %></div>
+		<div><strong>Email : </strong> <%= @userInfo["email"] %></div>
+		<% @userInfo["phoneNumbers"].each do |ph| %>
+		  	<div>
+				<b>Phone <%= ph["type"]%>:</b>
+				<!-- tel protocol only works on an actual phone, 
+					 not the simulator -->
+				<a href='tel:<%= ph["number"] %>' 
+					rel="external"><%= ph["number"] %></a>
+			</div>
+		<% end %>
+		<br/>
+
+		<div><b>Location: </b></div>
+
+		<div>
+		<%= @userInfo["address"]["street"] %>,
+		<%= @userInfo["address"]["city"] %> 
+		<%= @userInfo["address"]["state"] %>
+		</div>
+		<br/>
+
+		<div><strong>Manager Name : </strong> <%= @userInfo["ManagerName"] %></div>
+
 	</td>
 </tr>
 </table>

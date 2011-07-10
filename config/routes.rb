@@ -8,12 +8,17 @@ SampleApp::Application.routes.draw do
   match '/contact', :to => 'pages#contact'
   match '/about',   :to => 'pages#about'
   match '/help',    :to => 'pages#help'
-  match '/builder',    :to => 'pages#builder'  
-  match '/preview',    :to => 'pages#preview'
+  match '/builder',    :to => 'surveys#builder'  
+  match '/preview',    :to => 'surveys#preview'
   
-  match '/signup',  :to => 'users#new'
-  match '/signin',  :to => 'sessions#new'
+  #match '/signup',  :to => 'users#new'
+  #match '/signin',  :to => 'sessions#new'
+  match '/signup',  :to => 'sessions#login'
+  match '/signin',  :to => 'sessions#login'
   match '/signout',  :to => 'sessions#destroy'
+  
+  match '/auth/:provider/callback', :to => 'sessions#create'
+  match '/auth/failure', :to => 'sessions#fail'
   
   root :to => 'pages#home'
   

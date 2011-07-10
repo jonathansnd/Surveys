@@ -1,3 +1,5 @@
+require 'Chatter'
+
 class UsersController < ApplicationController
 
   before_filter :authenticate, :only => [:index, :edit, :update,:destroy]
@@ -13,8 +15,10 @@ class UsersController < ApplicationController
 
   def show
     
+    @userInfo = Chatter.get_my_info
     @user = User.find(params[:id])
     @title = @user.name
+    @authtoken = ENV['sfdc_token']
     
   end
       
