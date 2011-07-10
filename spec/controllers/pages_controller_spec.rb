@@ -4,7 +4,7 @@ describe PagesController do
   render_views
   
   before(:each) do
-    @base_title = 'Boolco Sample App'
+    @base_title = 'Surveys Service'
   end
   
   describe "GET 'home'" do

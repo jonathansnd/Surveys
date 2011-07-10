@@ -1,12 +1,11 @@
 class SessionsController < ApplicationController
 
-  #before_filter :force_ssl
   def new
     @title = "Sign in"
   end
 
   def login
-    redirect_to '/auth/salesforce'
+    redirect_to root_path
   end
 
   def deny_access
@@ -75,11 +74,13 @@ class SessionsController < ApplicationController
     end
 
     sign_in user
+    flash[:success] = "Welcome to our Survey Service!"
     redirect_back_or user 
 
   end
 
   def fail
+    flash[:error] = "Oops, there was an error in the authentaction process."
     render :text => request.env['omniauth.auth'].inspect
   end
   
@@ -87,13 +88,5 @@ class SessionsController < ApplicationController
     sign_out
     redirect_to root_path
   end
-  
-  #private
-  #
-  #def force_ssl
-  #  if !request.ssl?
-  #    redirect_to :protocol => 'https'
-  #  end
-  #end
 
 end

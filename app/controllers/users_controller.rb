@@ -2,7 +2,7 @@ require 'Chatter'
 
 class UsersController < ApplicationController
 
-  before_filter :authenticate, :only => [:index, :edit, :update,:destroy]
+  before_filter :authenticate, :only => [:show, :index, :edit, :update,:destroy]
   before_filter :correct_user, :only => [:edit, :update]
   before_filter :admin_user,   :only => :destroy
   
@@ -15,8 +15,8 @@ class UsersController < ApplicationController
 
   def show
     
-    @userInfo = Chatter.get_my_info
     @user = User.find(params[:id])
+    @userInfo = Chatter.get_users_info(@user.user_id)
     @title = @user.name
     @authtoken = ENV['sfdc_token']
     
@@ -49,7 +49,7 @@ class UsersController < ApplicationController
       
       if @user.save
         sign_in @user 
-        flash[:success] = "Welcome to the Sample App!"
+        flash[:success] = "Welcome to our Survey Service!"
         redirect_to @user
       else
         @title = "Sign up"
@@ -93,10 +93,6 @@ class UsersController < ApplicationController
   end
     
   private
-
-    def authenticate
-      deny_access unless signed_in?
-    end
 
     def correct_user
       @user = User.find(params[:id])

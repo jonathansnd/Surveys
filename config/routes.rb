@@ -13,8 +13,8 @@ SampleApp::Application.routes.draw do
   
   #match '/signup',  :to => 'users#new'
   #match '/signin',  :to => 'sessions#new'
-  match '/signup',  :to => 'sessions#login'
-  match '/signin',  :to => 'sessions#login'
+  match '/signup',  :to => 'pages#home'
+  match '/signin',  :to => 'sessions#authenticateSF'
   match '/signout',  :to => 'sessions#destroy'
   
   match '/auth/:provider/callback', :to => 'sessions#create'
