@@ -3,6 +3,7 @@ require 'Chatter'
 class UsersController < ApplicationController
 
   before_filter :authenticate, :only => [:show, :index, :edit, :update,:destroy]
+  before_filter :validate_session, :only => [:show, :index, :edit, :update,:destroy]
   before_filter :correct_user, :only => [:edit, :update]
   before_filter :admin_user,   :only => :destroy
   
@@ -14,12 +15,12 @@ class UsersController < ApplicationController
   end
 
   def show
-    
+
     @user = User.find(params[:id])
     @userInfo = Chatter.get_users_info(@user.user_id)
     @title = @user.name
     @authtoken = ENV['sfdc_token']
-    
+
   end
       
   def new

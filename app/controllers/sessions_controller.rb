@@ -20,68 +20,138 @@ class SessionsController < ApplicationController
       
   def create
 
-    ENV['sfdc_token'] = request.env['omniauth.auth']['credentials']['token']
-    ENV['sfdc_instance_url'] = request.env['omniauth.auth']['credentials']['instance_url']
- 
-    #render :text => request.env['omniauth.auth'].inspect
-    user_id = request.env['omniauth.auth']['extra']['user_hash']['user_id']
-    nickname = request.env['omniauth.auth']['extra']['user_hash']['nick_name']
-    last_status_body = request.env['omniauth.auth']['extra']['user_hash']['status']['body']
-    last_status_created_date = request.env['omniauth.auth']['extra']['user_hash']['status']['created_date']
-    email = request.env['omniauth.auth']['extra']['user_hash']['email']
-    name = request.env['omniauth.auth']['extra']['user_hash']['display_name']
-    profile = request.env['omniauth.auth']['extra']['user_hash']['urls']['recent']
-    thumbnail = request.env['omniauth.auth']['extra']['user_hash']['photos']['thumbnail']
-    org_id = request.env['omniauth.auth']['extra']['user_hash']['organization_id']
-    picture = request.env['omniauth.auth']['extra']['user_hash']['photos']['picture']
-    active = request.env['omniauth.auth']['extra']['user_hash']['active']
-    user_type = request.env['omniauth.auth']['extra']['user_hash']['user_type']
-    language = request.env['omniauth.auth']['extra']['user_hash']['language']
-    utcOffset = request.env['omniauth.auth']['extra']['user_hash']['utcOffset']
-    last_modified_date = request.env['omniauth.auth']['extra']['user_hash']['last_modified_date']
+    #obtain name of the service
+    params[:provider] ? service_route = params[:provider] : service_route = 'No service recognized (invalid callback)'
 
-    user = User.find_by_user_id(user_id)
+    # get the full hash from omniauth
+    omniauth = request.env['omniauth.auth']
 
-    if user.nil?
+    # continue only if hash and parameter exist
+    if omniauth and params[:provider]
 
-      user = User.new(:user_id => user_id,
-                       :email => email, 
-                       :name => name,
-                       :nickname => nickname,
-                       :thumbnail => thumbnail,
-                       :org_id => org_id,
-                       :picture => picture,
-                       :last_status_body => last_status_body,
-                       :last_status_created_date => last_status_created_date,
-                       :profile => profile,
-                       :active => active,
-                       :user_type => user_type,
-                       :language => language,
-                       :utcOffset => utcOffset,
-                       :last_modified_date => last_modified_date
-                    ) 
-      user.save
-      user = User.find_by_user_id(user_id)
+      # map the returned hashes to our variables first - the hashes will differ for every service
+
+      # create a new hash
+      @authhash = Hash.new
+
+      if service_route == 'forcedotcom'
+
+        #render :text => omniauth.inspect
+        omniauth['provider'] ? @authhash[:provider] =  omniauth['provider'] : @authhash[:provider] = ''
+        omniauth['extra']['user_hash']['user_id'] ? @authhash[:uid] =  omniauth['extra']['user_hash']['user_id'] : @authhash[:uid] = ''
+        omniauth['extra']['user_hash']['username'] ? @authhash[:username] =  omniauth['extra']['user_hash']['username'] : @authhash[:username] = ''
+        omniauth['extra']['user_hash']['nickname'] ? @authhash[:nickname] =  omniauth['extra']['user_hash']['nickname'] : @authhash[:nickname] = ''
+        omniauth['extra']['user_hash']['status']['body'] ? @authhash[:last_status_body] =  omniauth['extra']['user_hash']['status']['body'] : @authhash[:last_status_body] = ''
+        omniauth['extra']['user_hash']['status']['created_date'] ? @authhash[:last_status_created_date] =  omniauth['extra']['user_hash']['status']['created_date'] : @authhash[:last_status_created_date] = ''
+        omniauth['extra']['user_hash']['email'] ? @authhash[:email] =  omniauth['extra']['user_hash']['email'] : @authhash[:email] = ''
+        omniauth['extra']['user_hash']['display_name'] ? @authhash[:name] =  omniauth['extra']['user_hash']['display_name'] : @authhash[:name] = ''
+        omniauth['extra']['user_hash']['urls']['recent'] ? @authhash[:profile] =  omniauth['extra']['user_hash']['urls']['recent'] : @authhash[:profile] = ''
+        omniauth['extra']['user_hash']['photos']['thumbnail'] ? @authhash[:thumbnail] =  omniauth['extra']['user_hash']['photos']['thumbnail'] : @authhash[:thumbnail] = ''
+        omniauth['extra']['user_hash']['organization_id'] ? @authhash[:org_id] =  omniauth['extra']['user_hash']['organization_id'] : @authhash[:org_id] = ''
+        omniauth['extra']['user_hash']['photos']['picture'] ? @authhash[:picture] =  omniauth['extra']['user_hash']['photos']['picture'] : @authhash[:picture] = ''
+        omniauth['extra']['user_hash']['active'] ? @authhash[:active] =  omniauth['extra']['user_hash']['active'] : @authhash[:active] = ''
+        omniauth['extra']['user_hash']['user_type'] ? @authhash[:user_type] =  omniauth['extra']['user_hash']['user_type'] : @authhash[:user_type] = ''    
+        omniauth['extra']['user_hash']['language'] ? @authhash[:language] =  omniauth['extra']['user_hash']['language'] : @authhash[:language] = ''
+        omniauth['extra']['user_hash']['utcOffset'] ? @authhash[:utcOffset] =  omniauth['extra']['user_hash']['utcOffset'] : @authhash[:utcOffset] = ''
+        omniauth['extra']['user_hash']['last_modified_date'] ? @authhash[:last_modified_date] =  omniauth['extra']['user_hash']['last_modified_date'] : @authhash[:last_modified_date] = ''
+        omniauth['credentials']['instance_url'] ? @authhash[:sfdc_instance_url] =  omniauth['credentials']['instance_url'] : @authhash[:sfdc_instance_url] = ''
+        
+        #Set Tokens         
+        @authhash[:token] = omniauth['credentials']['token']
+        @authhash[:token_secret] = '' #Not used only for LinkedIn / Twitter
+        @authhash[:token_refresh] = omniauth['credentials']['refresh_token']
+        @authhash[:sf_consumer_key] = omniauth['credentials']['consumer_key']
+        @authhash[:sf_consumer_secret] = omniauth['credentials']['consumer_secret']
+
+        #Set Env vars
+        ENV['sfdc_token'] = @authhash[:token]
+        ENV['sfdc_token_refresh'] = @authhash[:token_refresh]
+        ENV['sfdc_consumer_key'] = @authhash[:sf_consumer_key]
+        ENV['sfdc_consumer_secret'] = @authhash[:sf_consumer_secret]
+        ENV['sfdc_instance_url'] = @authhash[:sfdc_instance_url]
+              
+        user = User.find_by_user_id(@authhash[:uid])
+
+        if user.nil?
+
+          user = User.new(:user_id => @authhash[:uid],
+                           :email => @authhash[:email], 
+                           :name => @authhash[:name],
+                           :nickname => @authhash[:nickname],
+                           :thumbnail => @authhash[:thumbnail],
+                           :org_id => @authhash[:org_id],
+                           :picture => @authhash[:picture],
+                           :last_status_body => @authhash[:last_status_body],
+                           :last_status_created_date => @authhash[:last_status_created_date],
+                           :profile => @authhash[:profile],
+                           :active => @authhash[:active],
+                           :user_type => @authhash[:user_type],
+                           :language => @authhash[:language],
+                           :utcOffset => @authhash[:utcOffset],
+                           :last_modified_date => @authhash[:last_modified_date]
+                        ) 
+          user.services.build(
+            :provider => @authhash[:provider],
+            :uid => @authhash[:uid],
+            :uname => @authhash[:username],
+            :uemail => @authhash[:email],
+            :token => @authhash[:token],
+            :token_secret => @authhash[:token_secret],
+            :token_refresh => @authhash[:token_refresh]
+          )
+
+          if user.save!
+            # signin existing user
+            # in the session his user id and the service id used for signing in is stored
+            session[:user_id] = user.id
+            session[:service_id] = user.services.first.id
+            
+          else
+            flash[:error] = 'This is embarrassing! There was an error while creating your account from which we were not able to recover.'
+            redirect_to root_path
+          end  
+
+        else
+
+          #update some basic in the user
+          user.picture = @authhash[:picture]
+          user.thumbnail = @authhash[:thumbnail]
+          user.last_status_body = @authhash[:last_status_body]
+          user.last_status_created_date = @authhash[:last_status_created_date]
+          user.last_modified_date = @authhash[:last_modified_date]
+          user.save
+
+        end
+      
+      else
+        # debug to output the hash that has been returned when adding new services
+        render :text => omniauth.to_yaml
+        return
+      end
+
+      if @authhash[:uid] != '' and @authhash[:provider] != ''
+
+        auth = Service.find_by_provider_and_uid(@authhash[:provider], @authhash[:uid])
+
+        sign_in user
+        flash[:success] = "Welcome to our Survey Service!"
+        redirect_back_or user 
+
+      else
+        flash[:error] =  'Error while authenticating via ' + service_route + '/' + @authhash[:provider].capitalize + '. The service returned invalid data for the user id.'
+        redirect_to signup_path
+      end
+    
     else
-
-      user.picture = picture
-      user.thumbnail = thumbnail
-      user.last_status_body = last_status_body
-      user.last_status_created_date = last_status_created_date
-      user.last_modified_date = last_modified_date
-      user.save
-
+      flash[:error] = 'Error while authenticating via ' + service_route.capitalize + '. The service did not return valid data.'
+      redirect_to signup_path
     end
-
-    sign_in user
-    flash[:success] = "Welcome to our Survey Service!"
-    redirect_back_or user 
 
   end
 
   def fail
     flash[:error] = "Oops, there was an error in the authentaction process."
-    render :text => request.env['omniauth.auth'].inspect
+    redirect_to root_path
   end
   
   def destroy

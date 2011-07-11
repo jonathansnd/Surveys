@@ -35,8 +35,12 @@ module SessionsHelper
     deny_access unless signed_in?
   end
 
+  def validate_session
+
+  end
+
   def authenticateSF
-    redirect_to '/auth/salesforce'
+    redirect_to '/auth/forcedotcom'
   end
 
   def deny_access

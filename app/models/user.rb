@@ -15,7 +15,8 @@ class User < ActiveRecord::Base
   #attr_accessor :password
   #attr_accessible :name, :email,
   #, :password, :password_confirmation
-
+  has_many :services
+  
   email_regex = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
 
   validates_uniqueness_of :user_id  

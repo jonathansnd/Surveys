@@ -1,9 +1,10 @@
 SampleApp::Application.configure do
+  
   # Settings specified here will take precedence over those in config/application.rb
-  OMNIAUTH_FULL_HOST = "https://ucsfsurveys.heroku.com"
-  SURVEY_LOGIN_PATH = "https://ucsfsurveys.heroku.com/auth/salesforce"
-  SALESFORCE_CONSUMER_KEY = "3MVG9y6x0357HlecoJl08HiRMZ6nuVlyHPzq5U2ItDd.DA9_pPdlHEAD.5EgZraV2y1zKw_JSjfLBaxUuIXCx"
-  SALESFORCE_CONSUMER_SECRET = "6910124392166051138"  
+  
+  ENV['full_host'] = "https://ucsfsurveys.heroku.com"
+  ENV['sfdc_consumer_key'] = "3MVG9y6x0357HlecoJl08HiRMZ6nuVlyHPzq5U2ItDd.DA9_pPdlHEAD.5EgZraV2y1zKw_JSjfLBaxUuIXCx"
+  ENV['sfdc_consumer_secret'] = "6910124392166051138"  
   # The production environment is meant for finished, "live" apps.
   # Code is not reloaded between requests
   config.cache_classes = true

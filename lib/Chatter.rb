@@ -8,7 +8,9 @@ class Chatter
   #debug_output $stderr
 
   def self.set_headers
-    headers 'Authorization' => "OAuth #{ENV['sfdc_token']}"
+    payload = 'grant_type=refresh_token' + '&client_id=' + ENV['sfdc_consumer_key']+ '&client_secret=' + ENV['sfdc_consumer_secret'] + '&refresh_token=' + ENV['sfdc_token_refresh']
+    result = post('https://login.salesforce.com/services/oauth2/token',:body => payload)
+    headers 'Authorization' => "OAuth #{result['access_token']}"
   end
 
   def self.root_url

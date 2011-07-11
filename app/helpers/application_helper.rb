@@ -17,7 +17,10 @@ module ApplicationHelper
     
    end
    
-   
-
-   
+   def self.salesforce_client(refresh_token, sf_consumer_key, sf_consumer_secret)
+    payload = 'grant_type=refresh_token' + '&client_id=' + sf_consumer_key + '&client_secret=' + sf_consumer_secret + '&refresh_token=' + refresh_token
+    result = HTTParty.post('https://login.salesforce.com/services/oauth2/token',:body => payload)
+    return result
+   end   
+ 
 end
