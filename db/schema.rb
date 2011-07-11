@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110711040732) do
+ActiveRecord::Schema.define(:version => 20110711173224) do
 
   create_table "services", :force => true do |t|
     t.integer  "user_id"
@@ -23,6 +23,13 @@ ActiveRecord::Schema.define(:version => 20110711040732) do
     t.string   "token_refresh"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "instance_url"
+    t.string   "org_id"
+    t.string   "user_type"
+    t.boolean  "active"
+    t.string   "last_status_update"
+    t.datetime "last_status_created_date"
+    t.string   "profile"
   end
 
   create_table "users", :force => true do |t|

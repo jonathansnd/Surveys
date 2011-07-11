@@ -64,11 +64,11 @@ class SessionsController < ApplicationController
         @authhash[:sf_consumer_secret] = omniauth['credentials']['consumer_secret']
 
         #Set Env vars
-        ENV['sfdc_token'] = @authhash[:token]
-        ENV['sfdc_token_refresh'] = @authhash[:token_refresh]
-        ENV['sfdc_consumer_key'] = @authhash[:sf_consumer_key]
-        ENV['sfdc_consumer_secret'] = @authhash[:sf_consumer_secret]
-        ENV['sfdc_instance_url'] = @authhash[:sfdc_instance_url]
+        #ENV['sfdc_token'] = @authhash[:token]
+        #ENV['sfdc_token_refresh'] = @authhash[:token_refresh]
+        #ENV['sfdc_instance_url'] = @authhash[:sfdc_instance_url]
+        #ENV['sfdc_consumer_key'] = @authhash[:sf_consumer_key]
+        #ENV['sfdc_consumer_secret'] = @authhash[:sf_consumer_secret]
               
         user = User.find_by_user_id(@authhash[:uid])
 
@@ -79,17 +79,15 @@ class SessionsController < ApplicationController
                            :name => @authhash[:name],
                            :nickname => @authhash[:nickname],
                            :thumbnail => @authhash[:thumbnail],
-                           :org_id => @authhash[:org_id],
                            :picture => @authhash[:picture],
                            :last_status_body => @authhash[:last_status_body],
                            :last_status_created_date => @authhash[:last_status_created_date],
-                           :profile => @authhash[:profile],
                            :active => @authhash[:active],
-                           :user_type => @authhash[:user_type],
                            :language => @authhash[:language],
                            :utcOffset => @authhash[:utcOffset],
                            :last_modified_date => @authhash[:last_modified_date]
-                        ) 
+                        )
+                        
           user.services.build(
             :provider => @authhash[:provider],
             :uid => @authhash[:uid],
@@ -97,7 +95,14 @@ class SessionsController < ApplicationController
             :uemail => @authhash[:email],
             :token => @authhash[:token],
             :token_secret => @authhash[:token_secret],
-            :token_refresh => @authhash[:token_refresh]
+            :token_refresh => @authhash[:token_refresh],
+            :instance_url => @authhash[:sfdc_instance_url],
+            :org_id => @authhash[:org_id],
+            :user_type => @authhash[:user_type],
+            :active => @authhash[:active],
+            :last_status_body => @authhash[:last_status_body],
+            :last_status_created_date => @authhash[:last_status_created_date],
+            :profile => @authhash[:profile]
           )
 
           if user.save!
@@ -135,9 +140,10 @@ class SessionsController < ApplicationController
 
         sign_in user
         flash[:success] = "Welcome to our Survey Service!"
-        redirect_back_or user 
-
+        redirect_back_or user
+        #redirect_to root_path
       else
+
         flash[:error] =  'Error while authenticating via ' + service_route + '/' + @authhash[:provider].capitalize + '. The service returned invalid data for the user id.'
         redirect_to signup_path
       end
@@ -146,6 +152,8 @@ class SessionsController < ApplicationController
       flash[:error] = 'Error while authenticating via ' + service_route.capitalize + '. The service did not return valid data.'
       redirect_to signup_path
     end
+
+    return
 
   end
 
