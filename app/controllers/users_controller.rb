@@ -23,7 +23,6 @@ class UsersController < ApplicationController
 
     chatterService = Chatter.new(current_user)
     @userInfo = chatterService.get_users_info(@user.user_id)
-    @authToken = chatterService.access_token 
     @title = @user.name
 
   end
