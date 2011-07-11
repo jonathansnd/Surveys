@@ -5,10 +5,10 @@ class SfFieldToUsers < ActiveRecord::Migration
   	add_column :users, :thumbnail, :string
   	add_column :users, :user_id, :string
   	add_column :users, :language, :string
-  	add_column :users, :utcOffset, :string
+  	add_column :users, :utcOffset, :integer
   	add_column :users, :last_modified_date, :datetime
   	add_column :users, :profile, :string
-  	add_column :users, :active, :string
+  	add_column :users, :active, :boolean
   	add_column :users, :user_type, :string
   	add_column :users, :last_status_body, :string
   	add_column :users, :last_status_created_date, :datetime
