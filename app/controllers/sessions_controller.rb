@@ -64,11 +64,6 @@ class SessionsController < ApplicationController
         @authhash[:sf_consumer_secret] = omniauth['credentials']['consumer_secret']
 
         #Set Env vars
-        #ENV['sfdc_token'] = @authhash[:token]
-        #ENV['sfdc_token_refresh'] = @authhash[:token_refresh]
-        #ENV['sfdc_instance_url'] = @authhash[:sfdc_instance_url]
-        #ENV['sfdc_consumer_key'] = @authhash[:sf_consumer_key]
-        #ENV['sfdc_consumer_secret'] = @authhash[:sf_consumer_secret]
               
         user = User.find_by_user_id(@authhash[:uid])
 
@@ -80,8 +75,6 @@ class SessionsController < ApplicationController
                            :nickname => @authhash[:nickname],
                            :thumbnail => @authhash[:thumbnail],
                            :picture => @authhash[:picture],
-                           :last_status_body => @authhash[:last_status_body],
-                           :last_status_created_date => @authhash[:last_status_created_date],
                            :active => @authhash[:active],
                            :language => @authhash[:language],
                            :utcOffset => @authhash[:utcOffset],
@@ -100,7 +93,7 @@ class SessionsController < ApplicationController
             :org_id => @authhash[:org_id],
             :user_type => @authhash[:user_type],
             :active => @authhash[:active],
-            :last_status_body => @authhash[:last_status_body],
+            :last_status_update => @authhash[:last_status_body],
             :last_status_created_date => @authhash[:last_status_created_date],
             :profile => @authhash[:profile]
           )
@@ -121,10 +114,18 @@ class SessionsController < ApplicationController
           #update some basic in the user
           user.picture = @authhash[:picture]
           user.thumbnail = @authhash[:thumbnail]
-          user.last_status_body = @authhash[:last_status_body]
-          user.last_status_created_date = @authhash[:last_status_created_date]
           user.last_modified_date = @authhash[:last_modified_date]
           user.save
+          
+          #get forcedotcom service and update informaiton
+          serviceauth = user.services.find(:first, :conditions => { :provider => service_route })
+          serviceauth.token = @authhash[:token]
+          serviceauth.user_type = @authhash[:user_type]
+          serviceauth.active = @authhash[:active]
+          serviceauth.last_status_update = @authhash[:last_status_body]
+          serviceauth.last_status_created_date = @authhash[:last_status_created_date]
+          serviceauth.profile = @authhash[:profile]
+          serviceauth.save
 
         end
       
@@ -139,7 +140,7 @@ class SessionsController < ApplicationController
         auth = Service.find_by_provider_and_uid(@authhash[:provider], @authhash[:uid])
 
         sign_in user
-        flash[:success] = "Welcome to our Survey Service!"
+        flash[:success] = "Hi "+user.name+" ,  Welcome to our Survey Service!"
         redirect_back_or user
         #redirect_to root_path
       else

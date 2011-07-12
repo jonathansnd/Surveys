@@ -1,0 +1,13 @@
+<h1>New Survey</h1>
+
+<div>
+	<h3>REST API Test</h3>
+
+	<%= form_tag :controller => "surveys", :action => "createsurvey" do %>
+		
+		<%= label_tag(:name, "Survey Name:") %>
+  		<%= text_field_tag(:name) %>
+		<%= submit_tag "Confirm and create new survey" %> <%= submit_tag "Cancel" %>
+	<% end %>
+
+</div>

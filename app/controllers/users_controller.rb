@@ -12,14 +12,14 @@ class UsersController < ApplicationController
     @title = "All users"
     
     @users = User.paginate(:page => params[:page])
-    @serviceauth = @current_user.services.find(:first, :conditions => { :provider => 'forcedotcom' })
+    @serviceauth = current_user.services.find(:first, :conditions => { :provider => 'forcedotcom' })
     
   end
 
   def show
 
     @user = User.find(params[:id])
-    @serviceauth = @current_user.services.find(:first, :conditions => { :provider => 'forcedotcom' })
+    @serviceauth = current_user.services.find(:first, :conditions => { :provider => 'forcedotcom' })
 
     chatterService = Chatter.new(current_user)
     @userInfo = chatterService.get_users_info(@user.user_id)
