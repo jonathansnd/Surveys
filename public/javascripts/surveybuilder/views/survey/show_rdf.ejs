@@ -1,3 +1,23 @@
+<div id="export">
+
+<script type="text/javascript">
+  function submitform(form){
+      form.name.value = <% if (survey.title) { %> "<%= survey.title %>" <% } else{ %> "Untitled" <% } %>;
+      form.srdf.value = document.getElementById('surveyexport').value
+      form.submit();
+  }
+</script>
+
+<div style="text-align:center;width:100%;margin-bottom:20px;">
+<form name="surveyexportsf" accept-charset="UTF-8" action="/surveys/createsurvey" method="post">
+  <input name="name" type="hidden" value="" />
+  <input name="srdf" type="hidden" value="" />
+  <input type="button" name="send" Value="Export to Salesforce" onClick="submitform(this.form)" class="sexybutton sexysimple" />
+</form>
+</div>
+
+
+<textarea id="surveyexport">
 <Survey xmlns="http://indivo.org/vocab/xml/documents#">
 	<id><% if (survey.title) { %> <%= survey.name %> <%}%></id>
     <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -27,3 +47,7 @@
         <% } %>
     </rdf:RDF>
 </Survey>
+</textarea>
+</div>
+
+

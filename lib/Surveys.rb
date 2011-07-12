@@ -1,4 +1,5 @@
 require 'httparty'
+require 'base64'
 
 class Surveys
 
@@ -29,7 +30,30 @@ class Surveys
         :name => params[:name]
       }.to_json
     }
+    
+    #create survey
     @resp = Surveys.post(root_url+"/sobjects/survey__c/", options)
+
+      #create attachment
+    if(@resp[0] == nil && @resp["success"])
+        
+      options = {
+        :body => {
+          :parentId => @resp["id"],
+          :body => Base64.encode64(params[:srdf]),
+          :name => 'surveyrdf.xml'
+        }.to_json
+      }
+    
+      #create survey
+      @respatt = Surveys.post(root_url+"/sobjects/Attachment/", options)
+      
+      if(@respatt[0] != nil)
+        return @respatt   
+      end     
+
+    end
+
     return @resp
     
   end

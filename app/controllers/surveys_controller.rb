@@ -15,6 +15,7 @@ class SurveysController < ApplicationController
 
   def export
   	@title = 'Survey Export'
+
   end
 
   def createsurvey
@@ -23,17 +24,18 @@ class SurveysController < ApplicationController
     surveyService = Surveys.new(current_user)
 
     #create the survey
-    surveyResponse = surveyService.create(params)
+    resp = surveyService.create(params)
 
     #display results
-    if(surveyResponse[0] == nil && surveyResponse["success"])
-      flash[:success] = "Survey has been created!"
+    if(resp[0] == nil && resp["success"])
+      link = "<a href=\"#{resp["id"]}\">View details</a>"  
+      flash[:success] = "Survey has been created! #{link}"
+      #redirect_to :controller => 'surveys', :action => 'export', :id => resp["id"]
     else
-      flash[:error] = "Oops there was an error : " + surveyResponse[0]["message"]
+      flash[:error] = "Oops there was an error : " + resp[0]["message"]
     end
-    
-    #return to export page
-    redirect_to export_path
+
+    redirect_to builder_path
 
   end
 

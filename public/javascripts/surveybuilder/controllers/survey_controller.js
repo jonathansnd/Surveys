@@ -56,13 +56,16 @@ $.Controller.extend('Surveybuilder.Controllers.Survey',
     exportSurvey: function(){
         if ($('#export').length > 0) {
             // close the existing export tab if it exists
-      		OpenAjax.hub.publish('tabs.close', {id:'export'});      
+            OpenAjax.hub.publish('tabs.close', {id:'export'});
         }
 
-		//add in an export tab and populate with exported survey
-        $('.ui-tabs-nav').after('<div id="export"><textarea >' + $.View('//surveybuilder/views/survey/show_rdf', {survey:Survey.findOne({id:1}), lines:Line.findAll(), date:new Date()}).replace(/^\s*[\n\f\r]/gm, '') + '</textarea></div>');
+        //add in an export tab and populate with exported survey
+        $('.ui-tabs-nav').after(
+            $.View('//surveybuilder/views/survey/show_rdf', {survey:Survey.findOne({id:1}), lines:Line.findAll(), date:new Date()}).replace(/^\s*[\n\f\r]/gm, '')          
+        );
         $('#surveyBuilderTabs').tabs('add' , "#export" , 'export');
     },
+
     ".survey-form input change": function(el, ev){
         this.surveyFormChange(el, ev);
     },
