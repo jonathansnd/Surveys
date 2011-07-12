@@ -28,7 +28,7 @@ class SurveysController < ApplicationController
 
     #display results
     if(resp[0] == nil && resp["success"])
-      link = "<a href=\"#{resp["id"]}\">View details</a>"  
+      link = "<a href=\"https://na9.salesforce.com/#{resp["id"]}\" target=\"_blank\">View details</a>"  
       flash[:success] = "Survey has been created! #{link}"
       #redirect_to :controller => 'surveys', :action => 'export', :id => resp["id"]
     else
