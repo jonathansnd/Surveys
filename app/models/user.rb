@@ -14,7 +14,7 @@ class User < ActiveRecord::Base
 
   #attr_accessible :name, :email,
   #,:password, :password_confirmation
-  has_many :services
+  has_many :services, :dependent => :destroy
   
   email_regex = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
 

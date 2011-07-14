@@ -28,8 +28,9 @@ class SurveysController < ApplicationController
 
     #display results
     if(resp[0] == nil && resp["success"])
-      link = "<a href=\"https://na9.salesforce.com/#{resp["id"]}\" target=\"_blank\">View details</a>"  
-      flash[:success] = "Survey has been created! #{link}"
+      serviceauth = current_user.services.find(:first, :conditions => { :provider => 'forcedotcom' })
+      link = "<a href=\"#{serviceauth.instance_url}/#{resp["id"]}\" target=\"_blank\" class=\"detailsLink\">View details</a>"  
+      flash[:success] = "Your survey has been created! #{link} "
       #redirect_to :controller => 'surveys', :action => 'export', :id => resp["id"]
     else
       flash[:error] = "Oops there was an error : " + resp[0]["message"]

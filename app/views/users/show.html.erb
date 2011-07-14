@@ -14,7 +14,13 @@
 					<div>"<%= @userInfo["currentStatus"] != nil ? @userInfo["currentStatus"]["body"]["text"] : 'No status update' %>"</div>
 				</div>
 			</div>
+		<% else %>
+			<div style="width:100%;">
+				<%= @userInfo[0]["message"] %>
+			</div>
+			
 		<% end %>
+
 	</td>
 
 	<td class="sidebar round">
@@ -24,7 +30,7 @@
 			<br/>
 			<div><i><%= @userInfo["aboutMe"] %> </i></div>
 			<br/>
-			<div><strong>Chatter : </strong> <a href="<%= ENV['sfdc_instance_url'] %>/<%= @userInfo["id"] %>" target="_blank">Full Profile</a></div>
+			<div><strong>Chatter : </strong> <a href="<%= @serviceauth.instance_url %>/<%= @userInfo["id"] %>" target="_blank" class="detailsLink">Full Profile</a></div>
 			<br/>
 			<div><strong>Name : </strong> <%= @userInfo["name"] %></div>
 			<div><strong>Email : </strong> <%= @userInfo["email"] %></div>

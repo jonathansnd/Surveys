@@ -196,3 +196,9 @@ ul.users {
 .users li {
   list-style: none;
 }
+
+.detailsLink{
+  
+  font-weight:bold;
+  text-decoration:underline;
+}

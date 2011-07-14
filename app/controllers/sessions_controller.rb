@@ -64,7 +64,6 @@ class SessionsController < ApplicationController
         @authhash[:sf_consumer_secret] = omniauth['credentials']['consumer_secret']
 
         #Set Env vars
-              
         user = User.find_by_user_id(@authhash[:uid])
 
         if user.nil?

@@ -27,7 +27,9 @@ class Surveys
     set_headers
     options = {
       :body => {
-        :name => params[:name]
+        :name => params[:name],
+        :description__c => params[:description],
+        :status__c => 'Debug'
       }.to_json
     }
     
