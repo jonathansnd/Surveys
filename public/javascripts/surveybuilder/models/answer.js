@@ -15,8 +15,12 @@ $.Model.extend('Answer',
      * @param {Function} success a callback function that returns wrapped answer objects.
      * @param {Function} error a callback function for an error in the ajax request.
      */
+
     findAll : function(params, success, error){
-    	answers = [new Answer({'type':'answer','subType':'label', 'displayName':'Fixed Choice'}), new Answer({'type':'answer','subType':'text', 'displayName':'Free Text'})];
+    	answers = [
+            new Answer({'type':'answer','subType':'label', 'displayName':'Fixed Choice'})
+            ,new Answer({'type':'answer','subType':'text', 'displayName':'Free Text'})
+        ];
         if (success) {
         	success(answers);
         }

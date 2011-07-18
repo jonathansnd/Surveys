@@ -30,7 +30,7 @@ form{padding-left:1.5em;}
 .ui-draggable-dragging {height: 2em !important; overflow:hidden !important; z-index:9000 !important;}
 .ui-draggable-dragging .button-menu {display:none;}
 #surveyBuilderTabs .ui-tabs-nav { width:630px; min-width: 490px; z-index:1;}
-#surveyBuilderTabs .ui-tabs-panel {margin-top: 2.5em;}
+/*#surveyBuilderTabs .ui-tabs-panel {margin-top: 2.5em;}*/
 
 .close-tab {position:relative; padding:0 !important; left:-15px; top:-2px;}
 .close-icon, .changes-made {display:none; left:0;}
@@ -55,7 +55,7 @@ form{padding-left:1.5em;}
 #tabsTopperHelper {background-color:#FFFFFF; height:11px; margin-left:235px; top:39px; width:650px; min-width: 510px; z-index:1;}
 
 #buttons {background-color:#E5E1DF; padding:5px 0; top:0; width:100%; z-index:1; height: 29px; border-radius: 10px 10px;}
-#buttons .first {margin-left:160px;}
+#buttons .first {margin-left:140px;}
 
 #survey {position:relative;}
 
@@ -83,7 +83,7 @@ form{padding-left:1.5em;}
 #components .content {display:none;}
 #components form {display:none;}
 #components .content-label {display: none;}
-#line-list, #question-list, #answer-list, #logic-list {float:left; width: 220px}
+#line-list, #question-list, #answer-list, #logic-list,#display-list,#displayCondition-list {float:left; width: 220px}
 
 #showHowto, #hideHowto {display:none;}
 
@@ -122,14 +122,24 @@ form{padding-left:1.5em;}
 .condition input {margin:0; width:80%;}
 .condition button {margin:0 !important; width:25px;}
 .condition button .ui-button-text {display:inline;}
-#ajax-loader {
-    background-image: url('../ajax_loader_E5E1DF.gif');
-    display: none;
+#ajax-loader-container {
+    display: block;
     height: 32px;
     left: 0;
     margin-left: 10px;
     top: 3px;
     width: 32px;
+    float:left;
+}
+
+#ajax-loader {
+    background-image: url('../ajax_loader_E5E1DF.gif');
+    display: none;
+    height: 32px;
+    left: 0;
+    top: 3px;
+    width: 32px;
+    float:left;
 }
 
 /* validation errors */
@@ -144,4 +154,12 @@ input.error {
 }
 
 #components .lineitem {-moz-box-shadow: none; -webkit-box-shadow: none;}
-#surveyContainer{position:relative;}
+#surveyContainer{position:relative;min-height:700px;}
+.component-block{
+
+    float:left;
+    margin-bottom:10px;
+    padding:5px 0 5px 5px;
+    -webkit-border-radius: 6px;
+    width:100%;
+}

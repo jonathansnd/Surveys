@@ -1,36 +1,34 @@
 /**
  * @tag models, home
- * Wraps backend question services.  Enables 
- * [Question.static.findAll retrieving],
- * [Question.static.update updating],
- * [Question.static.destroy destroying], and
- * [Question.static.create creating] questions.
+ * Wraps backend answer services.  Enables 
+ * [Answer.static.findAll retrieving],
+ * [Answer.static.update updating],
+ * [Answer.static.destroy destroying], and
+ * [Answer.static.create creating] answers.
  */
-$.Model.extend('Question',
+$.Model.extend('DisplayCondition',
 /* @Static */
 {
     /**
-     * Retrieves questions data from your backend services.
+     * Retrieves answers data from your backend services.
      * @param {Object} params params that might refine your results.
-     * @param {Function} success a callback function that returns wrapped question objects.
+     * @param {Function} success a callback function that returns wrapped answer objects.
      * @param {Function} error a callback function for an error in the ajax request.
      */
 
     findAll : function(params, success, error){
-    	questions = [new Question({'type':'question','subType':'simple', 'displayName':'Simple'}), 
-        		new Question({'type':'question','subType':'selectOne', 'displayName':'Multiple Choice'}),
-        		new Question({'type':'question','subType':'selectMultiple', 'displayName':'All that Apply'}),
-                new Question({'type':'question','subType':'gridSelectOne', 'displayName':'Grid'})
-                ];
+    	displayConditions = [
+            new DisplayCondition({'type':'displayCondition','subType':'condition', 'displayName':'Display Condition'})
+        ];
         if (success) {
-        	success(questions);
+        	success(DisplayCondition);
         }
-        return questions;
+        return displayConditions;
     },
     /**
-     * Updates a question's data.
-     * @param {String} id A unique id representing your question.
-     * @param {Object} attrs Data to update your question with.
+     * Updates an answer's data.
+     * @param {String} id A unique id representing your answer.
+     * @param {Object} attrs Data to update your answer with.
      * @param {Function} success a callback function that indicates a successful update.
      * @param {Function} error a callback that should be called with an object of errors.
      */
@@ -38,8 +36,8 @@ $.Model.extend('Question',
         alert('implement update');
     },
     /**
-     * Destroys a question's data.
-     * @param {String} id A unique id representing your question.
+     * Destroys an answer's data.
+     * @param {String} id A unique id representing your answer.
      * @param {Function} success a callback function that indicates a successful destroy.
      * @param {Function} error a callback that should be called with an object of errors.
      */
@@ -47,8 +45,8 @@ $.Model.extend('Question',
         alert('implement destroy');
     },
     /**
-     * Creates a question.
-     * @param {Object} attrs A question's attributes.
+     * Creates an answer.
+     * @param {Object} attrs A answer's attributes.
      * @param {Function} success a callback function that indicates a successful create.  The data that comes back must have an ID property.
      * @param {Function} error a callback that should be called with an object of errors.
      */

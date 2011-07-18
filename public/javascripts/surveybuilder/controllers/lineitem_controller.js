@@ -19,8 +19,11 @@ jQuery.Controller.extend('Surveybuilder.Controllers.Lineitem',
 		        Surveybuilder.Controllers.Lineitem.lineitemDeleteRecursive(Lineitem.findOne({id:lineitem.childQuestion}));
 		    }
 		    if(lineitem.childAnswer){
-		        Surveybuilder.Controllers.Lineitem.lineitemDeleteRecursive(Lineitem.findOne({id:lineitem.childAnswer}));
+		        Surveybuilder.Controllers.Lineitem.lineidisplayConditionsanstemDeleteRecursive(Lineitem.findOne({id:lineitem.childAnswer}));
 		    }
+             if(lineitem.childDisplayCondition){
+                Surveybuilder.Controllers.Lineitem.lineidisplayConditionsanstemDeleteRecursive(Lineitem.findOne({id:lineitem.childDisplayCondition}));
+            }
 		    if(lineitem.nextLineitem){
 		        Surveybuilder.Controllers.Lineitem.lineitemDeleteRecursive(Lineitem.findOne({id:lineitem.nextLineitem}));
 		    }
@@ -43,6 +46,9 @@ jQuery.Controller.extend('Surveybuilder.Controllers.Lineitem',
 		    if(lineitem.childAnswer){
 		        Surveybuilder.Controllers.Lineitem.lineitemRestoreRecursive(Lineitem.findOne({id:lineitem.childAnswer}));
 		    }
+            if(lineitem.childDisplayCondition){
+                Surveybuilder.Controllers.Lineitem.lineitemRestoreRecursive(Lineitem.findOne({id:lineitem.childDisplayCondition}));
+            }
 		    if(lineitem.nextLineitem){
 		        Surveybuilder.Controllers.Lineitem.lineitemRestoreRecursive(Lineitem.findOne({id:lineitem.nextLineitem}));
 		    }
@@ -80,6 +86,9 @@ jQuery.Controller.extend('Surveybuilder.Controllers.Lineitem',
 		    if(lineitemToDelete.childAnswer){
 		        Surveybuilder.Controllers.Lineitem.lineitemDeleteRecursive(Lineitem.findOne({id:lineitemToDelete.childAnswer}));
 		    }
+            if(lineitemToDelete.childDisplayCondition){
+                Surveybuilder.Controllers.Lineitem.lineitemDeleteRecursive(Lineitem.findOne({id:lineitemToDelete.childDisplayCondition}));
+            }
         Lineitem.destroy(lineitemToDelete.id);
     },
     
@@ -173,6 +182,9 @@ jQuery.Controller.extend('Surveybuilder.Controllers.Lineitem',
 				el.surveybuilder_lineitem();
                 if (el.hasClass('logicComponent')) {
                 	el.surveybuilder_logic_component();
+                }
+                if (el.hasClass('displayComponent')) {
+                    el.surveybuilder_display_component();
                 }
                 if (el.hasClass('branch')) {
                 	line = Line.findOne({id: el.attr("data-line")});
@@ -328,6 +340,12 @@ jQuery.Controller.extend('Surveybuilder.Controllers.Lineitem',
 		                        survey.attr("child", id);
 		                        survey.save();
                         		break;
+                            case "displayComponent":
+                                var parentLineItem = Lineitem.findOne({id:newParentId});
+                                if (currentLineitem.attr("type") === "displayCondition") {
+                                    parentLineItem.attr("childDisplayCondition", id);
+                                }
+                                break;
                         	default:
                         		break;
                         }
@@ -403,6 +421,7 @@ jQuery.Controller.extend('Surveybuilder.Controllers.Lineitem',
         $(el).find('.sub-questions').surveybuilder_lineitem_content({connectWith: '.sub-questions'});
         $(el).find('.grid-answers').surveybuilder_lineitem_content({connectWith: '.grid-answers'});
         $(el).find('.answers').surveybuilder_lineitem_content({connectWith: '.answers'});
+        $(el).find('.displayConditions').surveybuilder_lineitem_content({connectWith: '.displayConditions'});
     },
    
     ".lineitem-form input change": function(el, ev){
@@ -478,7 +497,14 @@ jQuery.Controller.extend('Surveybuilder.Controllers.Lineitem',
         var lineitemCopy = $('#answer-list .label');
         this.Class.lineitemMovedInDom(lineitemCopy.clone().appendTo(content), false );
     },
-    
+
+    ".quick-add-displayConditions click": function(el, ev) {
+        var element = $(el);
+        var content = element.closest('.lineitem').find('.displayConditions');
+        var lineitemCopy = $('#displayCondition-list .label');
+        this.Class.lineitemMovedInDom(lineitemCopy.clone().appendTo(content), false );
+    },
+        
     lineitemFormChange: function(el, ev) {
         var currentLineitem = Lineitem.findOne({id:el.closest('.lineitem').attr('id')}); 
         //var currentLineitem = el.closest('.lineitem').model();

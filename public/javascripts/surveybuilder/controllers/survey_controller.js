@@ -43,7 +43,9 @@ $.Controller.extend('Surveybuilder.Controllers.Survey',
         // add controller(s) to all the rendered lineitems
         $('#survey .lineitem').surveybuilder_lineitem();
         $('#survey .logicComponent').surveybuilder_logic_component();
+        $('#survey .displayComponent').surveybuilder_display_component();
         $('#survey .branch').surveybuilder_branch();
+        $('#survey .displayCondition').surveybuilder_display_condition();
     },
     
     'survey.export subscribe': function(event, params) {

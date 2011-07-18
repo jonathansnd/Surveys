@@ -8,7 +8,8 @@
     <% if (lineitem.answerProperty) { %>
         <answerProperty rdf:resource="<%= lineitem.answerProperty %>" />
     <% } %>
-    <questionAnswers>
+        <isRequired><% if (lineitem.isRequired == "true") { %><%=lineitem.isRequired %><%} else {%>false<% } %></isRequired>
+        <questionAnswers>
         <AnswerSequence>
           <rdf:li>
             <TextAnswer>

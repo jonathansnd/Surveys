@@ -25,8 +25,17 @@
                 <td class="td-input"><input type="text" name="answerNote" value="<%= lineitem.answerNote %>" class="ui-corner-all"/></td>
             </tr>
             <tr class="hideable">
-                <td class="td-label" title="The RDF predicate for this answer">RDF Answer Property:<span class="marker" title="required">*</span></td>
+                <td class="td-label" title="The RDF predicate for this answer">System Property Name:<span class="marker" title="required">*</span></td>
                 <td class="td-input"><input type="text" name="answerProperty" value="<%= lineitem.answerProperty %>" class="required ui-corner-all"/></td>
+            </tr>
+            <tr class="hideable">
+                <td class="td-label" title="Make this a required question">Is Required:</td>
+                <td class="td-input">
+                    <select name="isRequired">
+                        <option value="false" <% if (lineitem.isRequired && lineitem.isRequired  === 'false') { %> selected="selected" <% } %>>no</option>
+                        <option value="true" <% if (lineitem.isRequired && lineitem.isRequired  === 'true') { %> selected="selected" <% } %>>yes</option>
+                    </select>
+                </td>
             </tr>
             <tr class="hideable">
                 <td class="td-label" title="Optional data type for this question.  If present, will be used for validation of user input.">Data Type:</td>

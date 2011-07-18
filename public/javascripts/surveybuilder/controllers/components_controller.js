@@ -15,10 +15,14 @@ $.Controller.extend('Surveybuilder.Controllers.Components',
 		$('#question-list').surveybuilder_component_list({model: Question, template: '//surveybuilder/views/question/list', draggableClass: 'question'});
 		$('#answer-list').surveybuilder_component_list({model: Answer, template: '//surveybuilder/views/answer/list', draggableClass: 'answer', connectTo: '.answers'});
 		$('#logic-list').surveybuilder_component_list({model: LogicComponent , template: '//surveybuilder/views/logicComponent/list', draggableClass: 'logicComponent'});
+        $('#display-list').surveybuilder_component_list({model: DisplayComponent , template: '//surveybuilder/views/displayComponent/list', draggableClass: 'displayComponent'});
+        $('#displayCondition-list').surveybuilder_component_list({model: DisplayCondition , template: '//surveybuilder/views/displayCondition/list', draggableClass: 'displayCondition', connectTo: '.displayConditions'});
 		
         //attach lineitem and logicComponent controllers
         $('.lineitem').surveybuilder_lineitem();
         $('.logicComponent').surveybuilder_logic_component();
+        $('.displayComponent').surveybuilder_display_component();
+        $('.displayCondition').surveybuilder_display_condition();
     },
     
     "#add-line click": function(el, ev){

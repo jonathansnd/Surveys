@@ -68,6 +68,7 @@ $.Controller.extend('Surveybuilder.Controllers.Tabs',
         // add controllers to each newly rendered lineitem
         $('#'+id + ' .lineitem').surveybuilder_lineitem();
         $('#'+id + ' .logicComponent').surveybuilder_logic_component();
+        $('#'+id + ' .displayComponent').surveybuilder_display_component();
         $('#'+id + ' .branch').each(function() {
         	line = Line.findOne({id:$(this).attr('data-line')});
         	$(this).surveybuilder_branch({model:line});

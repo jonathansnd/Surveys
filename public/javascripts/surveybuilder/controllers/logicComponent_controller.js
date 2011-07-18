@@ -13,7 +13,7 @@ $.Controller.extend('Surveybuilder.Controllers.LogicComponent',
 		// show possible branch targets
 		var parentLine = Line.findOne({id:this.element.closest('.line').attr('id')});
 		var currentLineitem = Lineitem.findOne({id:this.element.attr('id')});
-		this.element.find('.branchTarget').html($.View('//surveybuilder/views/logicComponent/show_branchTargets', {lines:Line.findAll(), lineitem:currentLineitem, parentLine:parentLine}));
+		//this.element.find('.branchTarget').html($.View('//surveybuilder/views/logicComponent/show_branchTargets', {lines:Line.findAll(), lineitem:currentLineitem, parentLine:parentLine}));
 		// enable comboboxes
 		var rightOperandSelector = this.element.find('.right-operand-dataType');
 		this.configureCombobox(this.element.find('.leftOperand'), 'survey:predicate');
@@ -39,6 +39,7 @@ $.Controller.extend('Surveybuilder.Controllers.LogicComponent',
 				break;
 		}
 	},
+	
 	
 	'predicates.update subscribe': function(event, params) {
 		lists = this.element.find('.predicate-list');
@@ -81,4 +82,5 @@ $.Controller.extend('Surveybuilder.Controllers.LogicComponent',
 		var operandEl = el.closest('.condition').find('.rightOperand');
 		this.configureCombobox(operandEl, el.val());
 	}
+	
 });

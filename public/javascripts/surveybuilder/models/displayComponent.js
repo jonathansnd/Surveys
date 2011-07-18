@@ -1,36 +1,33 @@
 /**
  * @tag models, home
- * Wraps backend question services.  Enables 
- * [Question.static.findAll retrieving],
- * [Question.static.update updating],
- * [Question.static.destroy destroying], and
- * [Question.static.create creating] questions.
+ * Wraps backend logic component services.  Enables 
+ * [DisplayComponent.static.findAll retrieving],
+ * [DisplayComponent.static.update updating],
+ * [DisplayComponent.static.destroy destroying], and
+ * [DisplayComponent.static.create creating] logic components.
  */
-$.Model.extend('Question',
+$.Model.extend('DisplayComponent',
 /* @Static */
 {
     /**
-     * Retrieves questions data from your backend services.
+     * Retrieves logic component data from your backend services.
      * @param {Object} params params that might refine your results.
-     * @param {Function} success a callback function that returns wrapped question objects.
+     * @param {Function} success a callback function that returns wrapped logic component objects.
      * @param {Function} error a callback function for an error in the ajax request.
      */
-
     findAll : function(params, success, error){
-    	questions = [new Question({'type':'question','subType':'simple', 'displayName':'Simple'}), 
-        		new Question({'type':'question','subType':'selectOne', 'displayName':'Multiple Choice'}),
-        		new Question({'type':'question','subType':'selectMultiple', 'displayName':'All that Apply'}),
-                new Question({'type':'question','subType':'gridSelectOne', 'displayName':'Grid'})
-                ];
+    	DisplayComponents = [
+        new DisplayComponent({'type':'displayComponent','subType':'displayLogic', 'displayName':'Display Logic'})
+        ]; 
         if (success) {
-        	success(questions);
+        	success(DisplayComponents);
         }
-        return questions;
+        return DisplayComponents;
     },
     /**
-     * Updates a question's data.
-     * @param {String} id A unique id representing your question.
-     * @param {Object} attrs Data to update your question with.
+     * Updates a logic component's data.
+     * @param {String} id A unique id representing your logic component.
+     * @param {Object} attrs Data to update your logic component with.
      * @param {Function} success a callback function that indicates a successful update.
      * @param {Function} error a callback that should be called with an object of errors.
      */
@@ -38,8 +35,8 @@ $.Model.extend('Question',
         alert('implement update');
     },
     /**
-     * Destroys a question's data.
-     * @param {String} id A unique id representing your question.
+     * Destroys a logic component's data.
+     * @param {String} id A unique id representing your logic component.
      * @param {Function} success a callback function that indicates a successful destroy.
      * @param {Function} error a callback that should be called with an object of errors.
      */
@@ -47,8 +44,8 @@ $.Model.extend('Question',
         alert('implement destroy');
     },
     /**
-     * Creates a question.
-     * @param {Object} attrs A question's attributes.
+     * Creates a logic component.
+     * @param {Object} attrs A logic component's attributes.
      * @param {Function} success a callback function that indicates a successful create.  The data that comes back must have an ID property.
      * @param {Function} error a callback that should be called with an object of errors.
      */

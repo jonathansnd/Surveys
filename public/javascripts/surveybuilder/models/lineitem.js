@@ -174,7 +174,25 @@ $.Model.extend('Lineitem',
     	var attrArray = $.map(Lineitem.findAll(), function(lineitem, i){
     		return lineitem.attrs();
     	});
-    	
+        
+        /* JR - REMOVE : Debugging displayLogic
+        for(i = 0;i<attrArray.length;i++){
+
+            alert(attrArray[i].type)
+                                        
+            for(property in attrArray[i]){
+
+
+
+                if(attrArray[i].type == 'displayLogic'){
+                    alert(attrArray[i].displayLogic);
+                    alert(property);                
+                }
+
+            }
+        }
+        */
+
 		$.jStorage.set('lineitems', attrArray);
     },
     /**
@@ -269,6 +287,7 @@ $.Model.extend('Lineitem',
 					currentLineitem.attr('subType', "simple");
 					currentLineitem.attr('displayName', "Simple");
 					currentLineitem.attr('about', lineitem.attr('rdf:about'));
+                    currentLineitem.attr('isRequired', SURVEY_UTILS.getElementText(lineitem, "isRequired"));
 					currentLineitem.attr('questionText', SURVEY_UTILS.getElementText(lineitem, "questionText"));
 					currentLineitem.attr('defaultAnswerForEstimation', SURVEY_UTILS.getElementText(lineitem, "defaultAnswerForEstimation"));
 					currentLineitem.attr('answerProperty', SURVEY_UTILS.getElementAttribute(lineitem, 'answerProperty', 'rdf:resource'));
@@ -354,6 +373,39 @@ $.Model.extend('Lineitem',
 					}
 					
     				break;
+                case "DisplayCondition":
+                    currentLineitem.attr('type', "displayCondition");
+                    currentLineitem.attr('subType', "condition");
+                    currentLineitem.attr('displayName', "Display Condition");
+                    var operator = SURVEY_UTILS.getElement(lineitem, 'operator');
+                    var leftOperand = SURVEY_UTILS.getElement(lineitem, 'leftOperand');
+                    var rightOperand = SURVEY_UTILS.getElement(lineitem, 'rightOperand');
+
+                    currentLineitem.attr('operator', SURVEY_UTILS.getElementTextHTMLEncoded(operator, 'value'));
+                    currentLineitem.attr('leftOperandDataType', SURVEY_UTILS.getElementText(leftOperand, 'datatype'));
+                    if (currentLineitem.leftOperandDataType === 'survey:predicate' || currentLineitem.leftOperandDataType === 'survey:object') {
+                        currentLineitem.attr('leftOperand', SURVEY_UTILS.getElementAttribute(leftOperand, 'value', 'rdf:resource'));
+                    }
+                    else {
+                        currentLineitem.attr('leftOperand', SURVEY_UTILS.getElementText(leftOperand, "value"));
+                    }
+                    currentLineitem.attr('rightOperandDataType', SURVEY_UTILS.getElementText(rightOperand, 'datatype'));
+                    if (currentLineitem.rightOperandDataType === 'survey:predicate' || currentLineitem.rightOperandDataType === 'survey:object') {
+                        currentLineitem.attr('rightOperand', SURVEY_UTILS.getElementAttribute(rightOperand, 'value', 'rdf:resource'));
+                    }
+                    else {
+                        currentLineitem.attr('rightOperand', SURVEY_UTILS.getElementText(rightOperand, "value"));
+                    }
+
+                    break;
+                case "DisplayLogic":
+                    currentLineitem.attr('type', "displayComponent");
+                    currentLineitem.attr('subType', "displayLogic");
+                    currentLineitem.attr('displayName', "Display Logic");
+                    currentLineitem.attr('displayLogic',SURVEY_UTILS.getElementText(lineitem, "value"));
+
+                    Lineitem.loadFromXML(SURVEY_UTILS.getElements(lineitem, 'rdf:li'), currentLineitem);
+                    break;
     			default:
     				steal.dev.log("unrecognized lineitem type: " + tagName );
     				return;  //TODO: what to do on error?
