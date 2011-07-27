@@ -508,8 +508,13 @@ jQuery.Controller.extend('Surveybuilder.Controllers.Lineitem',
     lineitemFormChange: function(el, ev) {
         var currentLineitem = Lineitem.findOne({id:el.closest('.lineitem').attr('id')}); 
         //var currentLineitem = el.closest('.lineitem').model();
-        currentLineitem.attr(el.attr("name"), SURVEY_UTILS.htmlEncode(el.val()));
-        currentLineitem.save();
+        var name = el.attr("name");
+        if (name) {
+            // autocomplete can cause submissions with empty names, so ignore those
+            currentLineitem.attr(name, SURVEY_UTILS.htmlEncode(el.val()));
+            currentLineitem.save();
+        }
+    
         ev.stopPropagation();
     }    
     
