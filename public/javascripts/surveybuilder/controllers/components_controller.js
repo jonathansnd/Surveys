@@ -21,8 +21,9 @@ $.Controller.extend('Surveybuilder.Controllers.Components',
         //attach lineitem and logicComponent controllers
         $('.lineitem').surveybuilder_lineitem();
         $('.logicComponent').surveybuilder_logic_component();
-        $('.displayComponent').surveybuilder_display_component();
         $('.displayCondition').surveybuilder_display_condition();
+        $('.displayComponent').surveybuilder_display_component();
+
     },
     
     "#add-line click": function(el, ev){

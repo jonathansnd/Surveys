@@ -9,14 +9,12 @@ $.Controller.extend('Surveybuilder.Controllers.DisplayCondition',
 /* @Prototype */
 {
 	init: function(){
-
 		steal.dev.log('loaded display  Condition controller');
 		// show possible branch targets
 		var parentLine = Line.findOne({id:this.element.closest('.line').attr('id')});
 		var currentLineitem = Lineitem.findOne({id:this.element.attr('id')});
-		var rightOperandSelector = this.element.find('.right-operand-dataType');
 		//steal.dev.log('Right opernad selector found : '+rightOperandSelector.val;
-
+		var rightOperandSelector = this.element.find('.right-operand-dataType');
 		this.configureCombobox(this.element.find('.leftOperand'), 'survey:predicate');
 		this.configureCombobox(this.element.find('.rightOperand'), rightOperandSelector.val());
 	},
@@ -25,6 +23,7 @@ $.Controller.extend('Surveybuilder.Controllers.DisplayCondition',
 		var operand = el.val();
 		var name = el.attr('name');
 		var parent = el.parent();
+		//alert('dl '+name+' '+operand);
 		switch (dataType) {
 			case 'survey:object':
 				parent.html($.View('//surveybuilder/views/displayCondition/show_branchOperand', {operand:operand, operandDatatype:dataType, name:name, options:surveyBuilder.OBJECTS}));

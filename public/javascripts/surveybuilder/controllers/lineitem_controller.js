@@ -186,6 +186,9 @@ jQuery.Controller.extend('Surveybuilder.Controllers.Lineitem',
                 if (el.hasClass('displayComponent')) {
                     el.surveybuilder_display_component();
                 }
+                if (el.hasClass('displayCondition')) {
+                    el.surveybuilder_display_condition();
+                }
                 if (el.hasClass('branch')) {
                 	line = Line.findOne({id: el.attr("data-line")});
                 	el.surveybuilder_branch({model: line});

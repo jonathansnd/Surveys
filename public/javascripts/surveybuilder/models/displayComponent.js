@@ -16,13 +16,13 @@ $.Model.extend('DisplayComponent',
      * @param {Function} error a callback function for an error in the ajax request.
      */
     findAll : function(params, success, error){
-    	DisplayComponents = [
+    	displayComponents = [
         new DisplayComponent({'type':'displayComponent','subType':'displayLogic', 'displayName':'Display Logic'})
         ]; 
         if (success) {
-        	success(DisplayComponents);
+        	success(displayComponents);
         }
-        return DisplayComponents;
+        return displayComponents;
     },
     /**
      * Updates a logic component's data.

@@ -4,7 +4,7 @@
     <span class="ui-icon ui-icon-grip-dotted-vertical"></span>
     <span class="ui-icon ui-icon-trash"></span>
 
-    <div class="header hideable"><%= lineitem.displayName %></div>
+    <div class="header"><%= lineitem.displayName %></div>
     <form class="lineitem-form" onsubmit="return false;">
         
         <input type="hidden" name="displayName" value="<%= lineitem.displayName %>" />
@@ -12,14 +12,13 @@
         <input type="hidden" name="subType" value="<%= lineitem.subType %>" />
         <input type="hidden" name="parentId" value="<%= lineitem.parentId %>" />
         <input type="hidden" name="parentType" value="<%= lineitem.parentType %>" />
-
-        <div class="content-group hideable">
-            <span class="ui-icon ui-icon-triangle-1-s collapse"></span>
-            <div class="content-label">When:</div>
+        
+        <div class="content-group hideable">            
             <div class="hideable ui-corner-all">
                 <%= $.View('//surveybuilder/views/displayCondition/show_conditionInputs', {lineitem:lineitem}) %>
             </div>
         </div>
 
     </form>
+
 </div>
