@@ -49,12 +49,14 @@ class Surveys
     Surveys.headers 'Content-Type' => "text/xml"
 
     #create survey
-    soql = "SELECT Id,Name,body from Attachment where ParentId = \'#{sid}\' order by CreatedDate desc limit 1"
-    attachment = Surveys.get(root_url+"/query/?q=#{CGI::escape(soql)}")
+    soql = "SELECT Id,Name,(select id from Attachments) from Survey_RDF__c where Survey__c = \'#{sid}\' order by CreatedDate desc limit 1"
+    surveyRDF = Surveys.get(root_url+"/query/?q=#{CGI::escape(soql)}")
 
-    print_response('get_survey_xml (Get Attachment)',attachment)
+    print_response('get_survey_xml (Get Survey RDF)',surveyRDF)
 
-    attachmentid = attachment["records"][0]["Id"]
+    attachment = surveyRDF["records"][0]["Attachments"]["records"][0]
+
+    attachmentid = attachment["Id"]
     resp = Surveys.get(root_url+"/sobjects/Attachment/#{attachmentid}/Body")
 
     print_response('get_survey_xml (Get Body)',resp)
@@ -146,24 +148,50 @@ class Surveys
     end
 
     #create attachment
-    #if(@resp[0] == nil && @resp["success"])
     if(bSurveySaved)
+
+      #get survey version
+      soql = "SELECT Id,Latest_Version__c,Active_Version__c from Survey__c where id = \'#{surveyid}\'"
+      sfSurvey = Surveys.get(root_url+"/query/?q=#{CGI::escape(soql)}")
+      
+      print_response('Survey Query result : ',sfSurvey)
+
+      surveyVersion = 1.0
+      if(sfSurvey["records"][0]["Latest_Version__c"] != nil)
+        surveyVersion += sfSurvey["records"][0]["Latest_Version__c"]
+      end
 
       options = {
         :body => {
-          :parentId => surveyid,
-          :body => Base64.encode64(params[:srdf]),
-          :name => 'surveyrdf.xml'
+          :Survey__c => surveyid,
+          :name => 'Survey RDF V'+surveyVersion.to_s,
+          :version__c =>  surveyVersion,
+          :is_active__c => true
         }.to_json
       }
-    
-      #create survey
-      respatt = Surveys.post(root_url+"/sobjects/Attachment/", options)
-      print_response('Insert attachment result : ', respatt)
+
+      #create survey RDF
+      result = Surveys.post(root_url+"/sobjects/Survey_RDF__c/", options)
+
+      print_response('Create Survey RDF Response : ',result )
       
-      #if(@respatt[0] != nil)
-        #return @respatt   
-      #end     
+      if(result.code == 201)
+
+        surveyRDFid = result["id"]
+ 
+        options = {
+          :body => {
+            :name => 'surveyrdf.xml',
+            :parentId => surveyRDFid,
+            :body => Base64.encode64(params[:srdf])
+          }.to_json
+        }
+             
+        #create survey attachment
+        respatt = Surveys.post(root_url+"/sobjects/Attachment/", options)
+        print_response('Insert attachment result : ', respatt)
+
+      end
 
     end
 
