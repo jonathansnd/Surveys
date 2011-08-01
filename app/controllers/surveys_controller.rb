@@ -23,7 +23,8 @@ class SurveysController < ApplicationController
         
       else
 
-        @resp = nil
+        #@resp = nil
+        @resp = defaultSurveyDef
 
       end
 
