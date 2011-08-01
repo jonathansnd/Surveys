@@ -16,8 +16,9 @@ $.Controller.extend('Surveybuilder.Controllers.Survey',
     			OpenAjax.hub.publish('survey.render', {});
     			var mainLine = Line.findOne({about:Survey.findOne({id:1}).surveyLine});
                 if(mainLine != null){
-    			 OpenAjax.hub.publish('tabs.openLine', {id:mainLine.id});
+    			 //OpenAjax.hub.publish('tabs.openLine', {id:mainLine.id});
                 }
+
     			OpenAjax.hub.publish('survey.loadFinished', {});
     		},
     		//error

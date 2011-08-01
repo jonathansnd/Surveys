@@ -122,9 +122,10 @@ $.Model.extend('Survey',
 		survey.attr('xmlBase', RDF.attr('xml:base')); 
 		var surveyRDF = RDF.find('[nodeName="Survey"]');
 		survey.attr('title', SURVEY_UTILS.getElementText(surveyRDF, "dc:title"));
-		//survey.attr('description', SURVEY_UTILS.getElementText(surveyRDF, "")); TODO
+		survey.attr('description', SURVEY_UTILS.getElementText(surveyRDF, "dc:description"));
 		survey.attr('creator', SURVEY_UTILS.getElementText(surveyRDF, "dc:creator"));
-		//survey.attr('language', SURVEY_UTILS.getElementText(surveyRDF, "")); TODO
+		survey.attr('language', SURVEY_UTILS.getElementText(surveyRDF, "dc:language"));
+        survey.attr('mode', SURVEY_UTILS.getElementText(surveyRDF, "mode"));
 		survey.attr('contactEmail', SURVEY_UTILS.getElementText(surveyRDF, "contactEMail"));
 		survey.attr('introText', SURVEY_UTILS.getElementText(surveyRDF, "introText"));
 		survey.attr('completedMessage', SURVEY_UTILS.getElementText(surveyRDF, "completedMessage"));

@@ -71,6 +71,7 @@ class Surveys
     surveyid = ''
     surveyName  =  'Untitled'
     description = ''
+    surveyMode = ''
   
     #get some of the data from the xml
     doc = REXML::Document.new(params[:srdf])
@@ -82,6 +83,10 @@ class Surveys
     #get description
     doc.elements.each('Survey/rdf:RDF/Survey/dc:description') do |ele|
        description = ele.text
+    end 
+    #get mode
+    doc.elements.each('Survey/rdf:RDF/Survey/mode') do |ele|
+       surveyMode = ele.text
     end 
 
     #get survey id
@@ -96,14 +101,16 @@ class Surveys
 
     if(surveyid != nil && surveyid.length > 0)
       
+      surveyid = surveyid.sub('#','')
+      
       puts '>>> SURVEY UPDATE >>> '+surveyid
-
+      
        #update specified survey if we have the survey id in the parameters
       options = {
         :body => {
           :name => surveyName,
           :description__c => description,
-          :status__c => 'Debug'
+          :status__c => surveyMode,
         }.to_json
       }
 
@@ -128,7 +135,7 @@ class Surveys
         :body => {
           :name => surveyName,
           :description__c => description,
-          :status__c => 'Debug'
+          :status__c => surveyMode,
         }.to_json
       }
 
@@ -144,7 +151,7 @@ class Surveys
       else
         @resp = {:id => '', :code => result.code, :operation => 'insert'}
       end
-        
+
     end
 
     #create attachment
@@ -166,7 +173,7 @@ class Surveys
           :Survey__c => surveyid,
           :name => 'Survey RDF V'+surveyVersion.to_s,
           :version__c =>  surveyVersion,
-          :is_active__c => true
+          :is_active__c => false
         }.to_json
       }
 
@@ -191,6 +198,18 @@ class Surveys
         respatt = Surveys.post(root_url+"/sobjects/Attachment/", options)
         print_response('Insert attachment result : ', respatt)
 
+        #Activate Survey RDF
+        options = {
+          :body => {
+            :is_active__c => true
+          }.to_json
+        }
+
+        #update survey
+        result = Surveys.post(root_url+"/sobjects/survey_rdf__c/"+surveyRDFid+"/?_HttpMethod=PATCH", options)
+
+        print_response('Update attachment result : ', result)
+        
       end
 
     end
