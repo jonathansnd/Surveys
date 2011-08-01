@@ -61,6 +61,17 @@ $.Model.extend('Survey',
 			}
 		}
     },
+
+    /**
+     * Save off survey builder definition only in local storage
+     * @param {Number} id The id of the survey to save off
+     * @param {function} success callback function that indicates a successful remote save
+     * @param {function} error callback function that should be called on failure
+     */
+    saveLocal : function(id, success, error){
+		DATA_CONNECTOR.save_survey_local(id, $.View('//surveybuilder/views/survey/show_rdf', {survey:Survey.findOne({id:1}), lines:Line.findAll(), date:new Date()}).replace(/^\s*[\n\f\r]/gm, ''), success, error);
+    },
+
     /**
      * Save off survey builder definition using the provided data connector
      * @param {Number} id The id of the survey to save off

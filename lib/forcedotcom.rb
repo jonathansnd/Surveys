@@ -29,7 +29,6 @@ module OmniAuth
               "refresh_token" => @access_token.refresh_token,
               "consumer_key" => @access_token.client.id,
               "consumer_secret" => @access_token.client.secret
-
             },
             'extra' => {'user_hash' => data},
             'user_info' => {

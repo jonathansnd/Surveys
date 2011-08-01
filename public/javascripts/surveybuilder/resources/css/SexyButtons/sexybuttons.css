@@ -422,6 +422,7 @@
 .sexybutton span.reload			{ background-image: url(images/icons/silk/reload.png) !important; }
 .sexybutton span.sync			{ background-image: url(images/icons/silk/arrow_refresh.png) !important; }
 .sexybutton span.save			{ background-image: url(images/icons/silk/disk.png) !important; }
+.sexybutton span.sfdc			{ background-image: url(images/icons/silk/sfdc.png) !important; }
 .sexybutton span.email			{ background-image: url(images/icons/silk/email.png) !important; }
 .sexybutton span.print			{ background-image: url(images/icons/silk/printer.png) !important; }
 .sexybutton span.heart			{ background-image: url(images/icons/silk/heart.png) !important; }

@@ -15,7 +15,9 @@ $.Controller.extend('Surveybuilder.Controllers.Survey',
     		function(){
     			OpenAjax.hub.publish('survey.render', {});
     			var mainLine = Line.findOne({about:Survey.findOne({id:1}).surveyLine});
-    			OpenAjax.hub.publish('tabs.openLine', {id:mainLine.id});
+                if(mainLine != null){
+    			 OpenAjax.hub.publish('tabs.openLine', {id:mainLine.id});
+                }
     			OpenAjax.hub.publish('survey.loadFinished', {});
     		},
     		//error
@@ -63,7 +65,9 @@ $.Controller.extend('Surveybuilder.Controllers.Survey',
 
         //add in an export tab and populate with exported survey
         $('.ui-tabs-nav').after(
-            $.View('//surveybuilder/views/survey/show_rdf', {survey:Survey.findOne({id:1}), lines:Line.findAll(), date:new Date()}).replace(/^\s*[\n\f\r]/gm, '')          
+            '<div id="export"><textarea >' + 
+            $.View('//surveybuilder/views/survey/show_rdf', {survey:Survey.findOne({id:1}), lines:Line.findAll(), date:new Date()}).replace(/^\s*[\n\f\r]/gm, '')
+            + '</textarea></div>'          
         );
         $('#surveyBuilderTabs').tabs('add' , "#export" , 'export');
     },

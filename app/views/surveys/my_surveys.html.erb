@@ -1,0 +1,25 @@
+<div>
+	<h3>My Surveys</h3>
+
+	<table>
+	 <tr>
+	 	<th>Actions</th>
+	    <th>Name</th>
+	    <th>Status</th>
+	    <th>Description</th>
+	    <th>Preview</th>
+	    <th>Created Date</th>
+	 </tr>
+	<% @resp["records"].each do |record| %>
+		<tr style="background:#ffffff" onMouseOver="this.style.background='#eeeeee';" onMouseOut="this.style.background='#ffffff';">
+			
+			<td><%= link_to 'Edit', builder_path(:surveyid => record['Id']), :class => 'actionlink' %></td>
+			<td><a href="<%= @serviceauth.instance_url %>/<%=record['Id']%>" target="_blank" style="font-weight:bold;text-decoration:underline;"><%= record["Name"] %></a></td>
+			<td><%= record['Status__c'] %></td>
+			<td><%= record['Description__c'] %></td>
+			<td><% if(record['Preview_URL__c'] != nil) %> <a href="<%= record['Preview_URL__c'] %>" class="actionlink" target="_blank">Preview</a><% end %> </td>
+			<td><%= record['CreatedDate'].to_date %></td>
+		</tr>
+	<% end %>
+	</table>
+</div>

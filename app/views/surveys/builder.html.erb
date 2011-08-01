@@ -12,32 +12,81 @@
 	EXIT_TEXT = 'Exit';
 
 	/**
+	 * Function used for getting current URL Parameters, there should be a better way to do this
+	 * 
+	 */
+	function getUrlVars()
+	{
+	    var vars = [], hash;
+	    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+	    for(var i = 0; i < hashes.length; i++)
+	    {
+	        hash = hashes[i].split('=');
+	        vars.push(hash[0]);
+	        vars[hash[0]] = hash[1];
+	    }
+	    return vars;
+	}
+
+	/**
 	 * Generic data connector for the builder.  Implement a version to 
 	 * fit whatever backend you want the builder to tie into.
 	 *	 
 	 */
-	var connector = {
+	var SFconnector = {
+
+		/**
+		 * Basic implementation which saves the survey xml to browser storage.
+		 */											
+		save_survey_local: function(id, data, success, error) {
+
+			$.jStorage.set('surveyXML', data);
+			setTimeout(success, 1000);
+			
+			//error();  //uncomment this and comment out above to test error path
+		},
+
 		/**
 		 * Basic implementation which saves the survey xml to browser storage.
 		 */											
 		save_survey: function(id, data, success, error) {
-			$.jStorage.set('surveyXML', data);
 			
-			//call success after a 1 second delay
-			setTimeout(success, 1000);
-			//error();  //uncomment this and comment out above to test error path
+			var surveyid = getUrlVars()["surveyid"];
+
+			$.post('surveys/upsert.json', { surveyid: surveyid, srdf: data}
+				,function(data){
+					
+					if(data["id"] != ''){
+
+						if(data["operation"] == 'insert'){
+							document.location.href='/builder?surveyid='+data["id"];
+						}
+						success();
+
+					}else{
+						error();
+					}
+
+				}
+			);
+
 		},
 		
 		/**
 		 *	Basic implementation which loads the survey xml from browser storage
 		 */
 		get_survey: function(id, success, error) {
+
 			var xmlDoc = null;
-			var survey = $.jStorage.get('surveyXML');
-			if (!survey) {
-				// provide a base definition if no survey found
-				survey = '<Survey><rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/"><Survey><surveyLine rdf:resource="#mainline"></surveyLine></Survey><Line rdf:about="#mainline"><dc:title>Main Section</dc:title></Line></rdf:RDF></Survey>';
-			}
+			var survey = null;
+
+			// load definition from salesforce if id is provided, otherwise work with local storage
+			<% if @resp == nil %>
+				survey = $.jStorage.get('surveyXML');
+			<% else %>
+				survey = '<%= @resp.html_safe  %>';
+			<% end %>
+
 			// parse definition to an xmlDoc
 			if (window.DOMParser) {
 				parser=new DOMParser();
@@ -58,7 +107,7 @@
    };
 
    $(document).ready(function() {
-	   OpenAjax.hub.publish('survey.open', {'data_connector' : connector, 'id':1 });
+	   OpenAjax.hub.publish('survey.open', {'data_connector' : SFconnector, 'id':1 });
 	   
 	   // show basic error message on ajax fails
 	   $('#survey').ajaxError(function(e, xhr, settings, exception) {
