@@ -28,7 +28,7 @@
 			<td style="width:37%;"><a href="<%= @serviceauth.instance_url %>/<%=record['Id']%>" target="_blank" style="font-weight:bold;text-decoration:underline;"><%= record["Name"] %></a></td>
 			<td style="width:16%;"><%= record['Status__c'] %></td>
 			<td style="width:16%;"><%= record['Description__c'] %></td>
-			<td style="width:16%;"><%= record['CreatedDate'].to_date %>   <%= image_tag(record['CreatedBy']['SmallPhotoUrl']+"?oauth_token="+@serviceauth.token , :alt => record['CreatedBy']['Name'], "class" => "glossy", :height => '32', :width => '32')%></td>
+			<td style="width:16%;"><%= record['CreatedDate'].to_date.strftime('%m/%d/%Y') %>   <%= image_tag(record['CreatedBy']['SmallPhotoUrl']+"?oauth_token="+@serviceauth.token , :alt => record['CreatedBy']['Name'], "class" => "glossy", :height => '32', :width => '32')%></td>
 		</tr>
 	<% end %>
 	</table>
@@ -56,7 +56,7 @@
 			<td style="width:37%;"><a href="<%= @serviceauth.instance_url %>/<%=record['Id']%>" target="_blank" style="font-weight:bold;text-decoration:underline;"><%= record["Name"] %></a></td>
 			<td style="width:16%;"><%= record['Status__c'] %></td>
 			<td style="width:16%;"><%= record['Description__c'] %></td>
-			<td style="width:16%;"><%= record['CreatedDate'].to_date %>   <%= image_tag(record['CreatedBy']['SmallPhotoUrl']+"?oauth_token="+@serviceauth.token , :alt => record['CreatedBy']['Name'], "class" => "glossy", :height => '32', :width => '32')%></td>
+			<td style="width:16%;"><%= record['CreatedDate'].to_date.strftime('%m/%d/%Y')  %>   <%= image_tag(record['CreatedBy']['SmallPhotoUrl']+"?oauth_token="+@serviceauth.token , :alt => record['CreatedBy']['Name'], "class" => "glossy", :height => '32', :width => '32')%></td>
 		</tr>
 	<% end %>
 	</table>

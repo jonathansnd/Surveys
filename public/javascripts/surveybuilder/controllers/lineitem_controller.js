@@ -27,7 +27,7 @@ jQuery.Controller.extend('Surveybuilder.Controllers.Lineitem',
 		    if(lineitem.nextLineitem){
 		        Surveybuilder.Controllers.Lineitem.lineitemDeleteRecursive(Lineitem.findOne({id:lineitem.nextLineitem}));
 		    }
-		    Lineitem.destroy(lineitem.id);
+            lineitem.destroy();
         }
     },
     
@@ -71,27 +71,24 @@ jQuery.Controller.extend('Surveybuilder.Controllers.Lineitem',
     },
     
     /**
-     * Delete a Lineitem and its children
-     * @param {Number} id the id of the Lineitem to delete
-     */
+    * Delete a Lineitem and its children
+    * @param {Number} id the id of the Lineitem to delete
+    */
     lineitemDeleteById: function(id){
         // delete this lineitem and all children
         var lineitemToDelete = Lineitem.findOne({id:id});
         if(lineitemToDelete.child){
-		        Surveybuilder.Controllers.Lineitem.lineitemDeleteRecursive(Lineitem.findOne({id:lineitemToDelete.child}));
-		    }
-		    if(lineitemToDelete.childQuestion){
-		        Surveybuilder.Controllers.Lineitem.lineitemDeleteRecursive(Lineitem.findOne({id:lineitemToDelete.childQuestion}));
-		    }
-		    if(lineitemToDelete.childAnswer){
-		        Surveybuilder.Controllers.Lineitem.lineitemDeleteRecursive(Lineitem.findOne({id:lineitemToDelete.childAnswer}));
-		    }
-            if(lineitemToDelete.childDisplayCondition){
-                Surveybuilder.Controllers.Lineitem.lineitemDeleteRecursive(Lineitem.findOne({id:lineitemToDelete.childDisplayCondition}));
+            Surveybuilder.Controllers.Lineitem.lineitemDeleteRecursive(Lineitem.findOne({id:lineitemToDelete.child}));
             }
-        Lineitem.destroy(lineitemToDelete.id);
+            if(lineitemToDelete.childQuestion){
+                Surveybuilder.Controllers.Lineitem.lineitemDeleteRecursive(Lineitem.findOne({id:lineitemToDelete.childQuestion}));
+            }
+            if(lineitemToDelete.childAnswer){
+                Surveybuilder.Controllers.Lineitem.lineitemDeleteRecursive(Lineitem.findOne({id:lineitemToDelete.childAnswer}));
+            }
+            lineitemToDelete.destroy();
     },
-    
+        
     /**
      * Delete the branches to a given Line
      * //TODO: this is more of a generic bulk delete on Lineitems, so rename or refactor
