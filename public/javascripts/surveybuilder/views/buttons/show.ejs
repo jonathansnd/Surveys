@@ -3,9 +3,10 @@
     	<div id="ajax-loader"></div>
     </div>
     <% if (ENABLE_LOCAL_SAVE) { %><button id="saveAll" class="first sexybutton sexysimple disabled" disabled="disabled"><span class="save">Save</span></button><% } %>
-    <button id="saveSF" class="first sexybutton sexysimple"><span class="sfdc">Save Draft</span></button>
+    <button id="saveSF" class="first sexybutton sexysimple"><span class="save">Save</span></button>
     <button id="exportSurvey" class="sexybutton sexysimple"><span class="export">Export</span></button>
     <% if (PREVIEW_PATH != '') { %><a id="previewSurvey" href="<%= PREVIEW_PATH %>" target="_blank" class="sexybutton sexysimple"><span class="preview">Preview</span></a><% } %>
+    <% if (SF_URL!= '') { %><a id="viewInSF" href="<%= SF_URL %>" target="_blank" class="sexybutton sexysimple"><span class="sfdc">Publish</span></a><% } %>
     <button id="collapseAll" class="sexybutton sexysimple">Collapse All</button>
     <button id="hideHowto" class="sexybutton sexysimple"><span class="help">Hide Quick Start</span></button>
     <button id="showHowto" class="sexybutton sexysimple"><span class="help">Show Quick Start</span></button>

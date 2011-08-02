@@ -1,11 +1,12 @@
 
 <div id="surveyContainer"></div>
-<script type='text/javascript' src='javascripts/steal/steal.js?surveybuilder,development'></script>
+<script type='text/javascript' src='javascripts/steal/steal.js?surveybuilder,production'></script>
 
 <script language="javascript">
 
 	// Preview path
 	PREVIEW_PATH = '<%= @preview_url %>';
+	SF_URL = '<%= @salesforce_url %>';
 	ENABLE_LOCAL_SAVE = false;
 	
 	// Optional "exit" link

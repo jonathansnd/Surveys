@@ -5,7 +5,7 @@
 		<% if @userInfo[0] == nil %>
 			<div style="width:100%;">
 				<div style="width:220px;float:left;">
-					<%= image_tag(@userInfo["photo"]["largePhotoUrl"]+"?oauth_token="+@serviceauth.token , :alt => @userInfo["name"], "class" => "glossy")%>
+					<%= image_tag(@userInfo["photo"]["largePhotoUrl"]+"?oauth_token="+@serviceauth.token , :alt => @userInfo["name"], :class => "glossy")%>
 				</div>
 				<div style="width:300px;float:left;">
 					<div><h1><%= @userInfo["name"] %></h1></div>

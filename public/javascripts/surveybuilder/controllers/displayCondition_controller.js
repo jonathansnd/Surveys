@@ -9,14 +9,13 @@ $.Controller.extend('Surveybuilder.Controllers.DisplayCondition',
 /* @Prototype */
 {
 	init: function(){
-		steal.dev.log('loaded display  Condition controller');
+		steal.dev.log('loaded display Condition controller');
 		// show possible branch targets
 		var parentLine = Line.findOne({id:this.element.closest('.line').attr('id')});
 		var currentLineitem = Lineitem.findOne({id:this.element.attr('id')});
 		//steal.dev.log('Right opernad selector found : '+rightOperandSelector.val;
-		var rightOperandSelector = this.element.find('.right-operand-dataType');
 		this.configureCombobox(this.element.find('.leftOperand'), 'survey:predicate');
-		this.configureCombobox(this.element.find('.rightOperand'), rightOperandSelector.val());
+		this.configureCombobox(this.element.find('.rightOperand'), this.element.find('.right-operand-dataType').val());
 	},
 
 	configureCombobox: function(el, dataType) {

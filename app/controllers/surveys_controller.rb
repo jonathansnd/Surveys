@@ -22,7 +22,10 @@ class SurveysController < ApplicationController
         @serviceauth = current_user.services.find(:first, :conditions => { :provider => 'forcedotcom' })
         flash.now[:success] = "Survey defintion has been succesfully loaded."
 
-        @preview_url = @serviceauth.instance_url+'/apex/QuestionLine?pid='+params[:surveyid]
+        instance_url = @serviceauth.instance_url
+        @preview_url = instance_url+'/apex/QuestionLine?pid='+params[:surveyid]
+        @salesforce_url = instance_url+'/'+params[:surveyid]
+
         puts @resp
         
       else
@@ -50,6 +53,7 @@ class SurveysController < ApplicationController
 
     #create the survey
     @resp = surveyService.get_user_surveys;
+    @respShared = surveyService.get_shared_surveys;
 
     #display results
     @serviceauth = current_user.services.find(:first, :conditions => { :provider => 'forcedotcom' })

@@ -33,10 +33,24 @@ class Surveys
 
     set_headers
     #create survey
-    soql = "SELECT Id, Name, Status__c, Description__c, Site_URL__c,Preview_URL__c, CreatedDate from Survey__c order by CreatedDate desc"
+    soql = "SELECT Id, Name, Status__c, Description__c, Site_URL__c,Preview_URL__c, CreatedDate, CreatedBy.SmallPhotoUrl,CreatedBy.Name from Survey__c where OwnerId = '#{@serviceauth.uid}' order by CreatedDate desc"
     resp = Surveys.get(root_url+"/query/?q=#{CGI::escape(soql)}")
 
     print_response('get_user_surveys',resp)
+    return resp
+
+  end
+
+  def get_shared_surveys
+
+    puts '>>> SHARED SURVEY LIST >>> '
+
+    set_headers
+    #create survey
+    soql = "SELECT Id, Name, Status__c, Description__c, Site_URL__c,Preview_URL__c, CreatedDate, CreatedBy.SmallPhotoUrl,CreatedBy.Name from Survey__c where OwnerId != '#{@serviceauth.uid}' order by CreatedDate desc"
+    resp = Surveys.get(root_url+"/query/?q=#{CGI::escape(soql)}")
+
+    print_response('get_shared_surveys',resp)
     return resp
 
   end

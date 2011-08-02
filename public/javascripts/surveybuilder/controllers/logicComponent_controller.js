@@ -15,9 +15,8 @@ $.Controller.extend('Surveybuilder.Controllers.LogicComponent',
 		var currentLineitem = Lineitem.findOne({id:this.element.attr('id')});
 		this.element.find('.branchTarget').html($.View('//surveybuilder/views/logicComponent/show_branchTargets', {lines:Line.findAll(), lineitem:currentLineitem, parentLine:parentLine}));
 		// enable comboboxes
-		var rightOperandSelector = this.element.find('.right-operand-dataType');
 		this.configureCombobox(this.element.find('.leftOperand'), 'survey:predicate');
-		this.configureCombobox(this.element.find('.rightOperand'), rightOperandSelector.val());
+		this.configureCombobox(this.element.find('.rightOperand'), this.element.find('.right-operand-dataType').val());
 	},
 	
 	configureCombobox: function(el, dataType) {
