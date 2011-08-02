@@ -102,7 +102,7 @@ class Surveys
     if(surveyid != nil && surveyid.length > 0)
       
       surveyid = surveyid.sub('#','')
-      
+
       puts '>>> SURVEY UPDATE >>> '+surveyid
       
        #update specified survey if we have the survey id in the parameters
@@ -136,6 +136,7 @@ class Surveys
           :name => surveyName,
           :description__c => description,
           :status__c => surveyMode,
+          :type__c => 'Draft'
         }.to_json
       }
 

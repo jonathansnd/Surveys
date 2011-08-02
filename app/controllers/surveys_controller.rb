@@ -1,4 +1,4 @@
-require 'Surveys'
+ require 'Surveys'
 
 class SurveysController < ApplicationController
 
@@ -18,7 +18,11 @@ class SurveysController < ApplicationController
         @resp = surveyService.get_survey_xml(params[:surveyid])
         @resp = @resp.gsub(/\n|\r|\t/, '')
         @resp = @resp.gsub(/'/, '\\\\\'')
+
+        @serviceauth = current_user.services.find(:first, :conditions => { :provider => 'forcedotcom' })
         flash.now[:success] = "Survey defintion has been succesfully loaded."
+
+        @preview_url = @serviceauth.instance_url+'/apex/QuestionLine?pid='+params[:surveyid]
         puts @resp
         
       else
