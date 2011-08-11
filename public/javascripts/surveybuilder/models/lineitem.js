@@ -24,10 +24,7 @@ $.Model.extend('Lineitem',
 
 		//TODO: move this logic out of here 
         if(params && params.lineId){
-<<<<<<< HEAD
-=======
 
->>>>>>> a9f8ee5804ba38ebde6b422d41392b50c4423205
             var lineitems = Lineitem.list;
             for (var i=0; i<lineitems.length; i++){
                 if(lineitems[i].lineId == params.lineId && lineitems[i].type === 'branch'){
@@ -146,19 +143,12 @@ $.Model.extend('Lineitem',
     destroy : function(id, success, error){
         // remove any predicate entries this lineitem had
         this.updatePredicates(id, null);
-<<<<<<< HEAD
 
-        //Lineitem.list.remove(id);
-        //if(success) {
-           // success();
-        //}
-
-=======
         Lineitem.list.remove(id);
         if(success){
             success();
         }
->>>>>>> a9f8ee5804ba38ebde6b422d41392b50c4423205
+
     },
     /**
      * Creates a lineitem.
@@ -191,10 +181,6 @@ $.Model.extend('Lineitem',
     	var attrArray = $.map(Lineitem.findAll(), function(lineitem, i){
     		return lineitem.attrs();
     	});
-<<<<<<< HEAD
-        
-=======
->>>>>>> a9f8ee5804ba38ebde6b422d41392b50c4423205
 
 		$.jStorage.set('lineitems', attrArray);
     },
@@ -235,15 +221,9 @@ $.Model.extend('Lineitem',
     		var lineitem = jQuery(this).children().first();
     		var tagName = lineitem.get(0).nodeName;
     
-<<<<<<< HEAD
             newLineitems[index] = new Lineitem();
             currentLineitem = newLineitems[index];
     		
-=======
-    		// create an ID
-    		newLineitems[index] = new Lineitem();
-            currentLineitem = newLineitems[index];
->>>>>>> a9f8ee5804ba38ebde6b422d41392b50c4423205
     		// create links
     		if (index == 0) {
     			// link first child to parent

@@ -27,11 +27,7 @@ jQuery.Controller.extend('Surveybuilder.Controllers.Lineitem',
 		    if(lineitem.nextLineitem){
 		        Surveybuilder.Controllers.Lineitem.lineitemDeleteRecursive(Lineitem.findOne({id:lineitem.nextLineitem}));
 		    }
-<<<<<<< HEAD
 		    lineitem.destroy();
-=======
-            lineitem.destroy();
->>>>>>> a9f8ee5804ba38ebde6b422d41392b50c4423205
         }
     },
     
@@ -83,18 +79,15 @@ jQuery.Controller.extend('Surveybuilder.Controllers.Lineitem',
         var lineitemToDelete = Lineitem.findOne({id:id});
         if(lineitemToDelete.child){
             Surveybuilder.Controllers.Lineitem.lineitemDeleteRecursive(Lineitem.findOne({id:lineitemToDelete.child}));
-            }
-<<<<<<< HEAD
+        }
+
+        if(lineitemToDelete.childQuestion){
+            Surveybuilder.Controllers.Lineitem.lineitemDeleteRecursive(Lineitem.findOne({id:lineitemToDelete.childQuestion}));
+        }
+        if(lineitemToDelete.childAnswer){
+            Surveybuilder.Controllers.Lineitem.lineitemDeleteRecursive(Lineitem.findOne({id:lineitemToDelete.childAnswer}));
+        }
         lineitemToDelete.destroy();
-=======
-            if(lineitemToDelete.childQuestion){
-                Surveybuilder.Controllers.Lineitem.lineitemDeleteRecursive(Lineitem.findOne({id:lineitemToDelete.childQuestion}));
-            }
-            if(lineitemToDelete.childAnswer){
-                Surveybuilder.Controllers.Lineitem.lineitemDeleteRecursive(Lineitem.findOne({id:lineitemToDelete.childAnswer}));
-            }
-            lineitemToDelete.destroy();
->>>>>>> a9f8ee5804ba38ebde6b422d41392b50c4423205
     },
         
     /**
