@@ -48,7 +48,7 @@ $.Controller.extend('Surveybuilder.Controllers.Components',
             if (lineToDelete.child){
             	OpenAjax.hub.publish('lineitem.deleteRecursive', {lineitem:Lineitem.findOne({id:lineToDelete.child})});
             }
-            Line.destroy(lineId);
+            lineToDelete.destroy();
             $('#saveAll').removeClass('disabled').attr("disabled", false);
         }
     },

@@ -90,11 +90,16 @@ $.Model.extend('Line',
      * @param {Function} error a callback that should be called with an object of errors.
      */
     destroy : function(id, success, error){
+<<<<<<< HEAD
         Line.list.remove(id);
+=======
+    	Line.list.remove(id);
+>>>>>>> a9f8ee5804ba38ebde6b422d41392b50c4423205
 		if (success) {
 			success();
 		}
     },
+    
     saveAll : function(){
         alert('implement Line.saveAll');
     },
