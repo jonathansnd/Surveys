@@ -17,48 +17,92 @@
 	 </tr>
 	<% @resp["records"].each do |record| %>
 		<tr style="background:#ffffff" onMouseOver="this.style.background='#eeeeee';" onMouseOut="this.style.background='#ffffff';">
-			<td style="width:15%;">
+			<td style="width:22%;">
 				<table style="width:100%;margin:0;">
 					<tr>
 						<td style="width:50%;padding:0;margin:0;"><%= link_to 'Edit', builder_path(:surveyid => record['Id']), :class => 'sexybutton sexysimple' %></td>
 						<td style="width:50%;padding:0;margin:0;"><% if(record['Preview_URL__c'] != nil) %> <a href="<%= record['Preview_URL__c'] %>" class="sexybutton sexysimple" target="_blank">Preview</a><% end %> </td>
+						<td style="width:50%;padding:0;margin:0;"><%= link_to 'Publish', reports_builder_path(:surveyid => record['Id']), :class => 'sexybutton sexysimple' %></td>
 					</tr>
 				</table>
 			</td>
-			<td style="width:37%;"><a href="<%= @serviceauth.instance_url %>/<%=record['Id']%>" target="_blank" style="font-weight:bold;text-decoration:underline;"><%= record["Name"] %></a></td>
-			<td style="width:16%;"><%= record['Status__c'] %></td>
+			<td style="width:34%;"><a href="<%= @serviceauth.instance_url %>/<%=record['Id']%>" target="_blank" style="font-weight:bold;text-decoration:underline;"><%= record["Name"] %></a></td>
+			<td style="width:12%;"><%= record['Status__c'] %></td>
 			<td style="width:16%;"><%= record['Description__c'] %></td>
-			<td style="width:16%;"><%= record['CreatedDate'].to_date %>   <%= image_tag(record['CreatedBy']['SmallPhotoUrl']+"?oauth_token="+@serviceauth.token , :alt => record['CreatedBy']['Name'], "class" => "glossy", :height => '32', :width => '32')%></td>
+			<td style="width:16%;"><%= record['CreatedDate'].to_date.strftime('%m/%d/%Y')  %>   <%= link_to image_tag(record['CreatedBy']['SmallPhotoUrl']+"?oauth_token="+@serviceauth.token , :alt => record['CreatedBy']['Name'], "class" => "glossy", :height => '32', :width => '32'), @serviceauth.instance_url+'/'+record['CreatedById'], :target => '_blank' %></td>
 		</tr>
 	<% end %>
 	</table>
 
-	<h3>Surveys shared with me</h3>
+	<div style="display:block;padding:20px 0;">
+		<h3>My Published Surveys</h3>
+	</div>
 
-	<table>
-	 <tr>
-	 	<th>Actions</th>
-	    <th>Name</th>
-	    <th>Status</th>
-	    <th>Description</th>
-	    <th>Created by</th>
-	 </tr>
-	<% @respShared["records"].each do |record| %>
-		<tr style="background:#ffffff" onMouseOver="this.style.background='#eeeeee';" onMouseOut="this.style.background='#ffffff';">
-			<td style="width:15%;">
-				<table style="width:100%;margin:0;">
-					<tr>
-						<td style="width:50%;padding:0;margin:0;"><%= link_to 'Edit', builder_path(:surveyid => record['Id']), :class => 'sexybutton sexysimple' %></td>
-						<td style="width:50%;padding:0;margin:0;"><% if(record['Preview_URL__c'] != nil) %> <a href="<%= record['Preview_URL__c'] %>" class="sexybutton sexysimple" target="_blank">Preview</a><% end %> </td>
-					</tr>
-				</table>
-			</td>
-			<td style="width:37%;"><a href="<%= @serviceauth.instance_url %>/<%=record['Id']%>" target="_blank" style="font-weight:bold;text-decoration:underline;"><%= record["Name"] %></a></td>
-			<td style="width:16%;"><%= record['Status__c'] %></td>
-			<td style="width:16%;"><%= record['Description__c'] %></td>
-			<td style="width:16%;"><%= record['CreatedDate'].to_date %>   <%= image_tag(record['CreatedBy']['SmallPhotoUrl']+"?oauth_token="+@serviceauth.token , :alt => record['CreatedBy']['Name'], "class" => "glossy", :height => '32', :width => '32')%></td>
-		</tr>
+	<% if(@respPublished["records"].size > 0) %>
+		<table>
+		 <tr>
+		 	<th>Actions</th>
+		    <th>Name</th>
+		    <th>Status</th>
+		    <th>Description</th>
+		    <th>Created by</th>
+		 </tr>
+		<% @respPublished["records"].each do |record| %>
+			<tr style="background:#ffffff" onMouseOver="this.style.background='#eeeeee';" onMouseOut="this.style.background='#ffffff';">
+				<td style="width:15%;">
+					<table style="width:100%;margin:0;">
+						<tr>
+							<td style="width:50%;padding:0;margin:0;"><% if(record['Response_Object_Prefix__c'] != nil) %> <a href="<%= @serviceauth.instance_url %>/<%= record['Response_Object_Prefix__c'] %>" class="sexybutton sexysimple" target="_blank">View Responses</a><% end %> </td>
+						</tr>
+					</table>
+				</td>
+				<td style="width:37%;"><a href="<%= @serviceauth.instance_url %>/<%=record['Id']%>" target="_blank" style="font-weight:bold;text-decoration:underline;"><%= record["Name"] %></a></td>
+				<td style="width:16%;"><%= record['Status__c'] %></td>
+				<td style="width:16%;"><%= record['Description__c'] %></td>
+				<td style="width:16%;"><%= record['CreatedDate'].to_date.strftime('%m/%d/%Y')  %>   <%= link_to image_tag(record['CreatedBy']['SmallPhotoUrl']+"?oauth_token="+@serviceauth.token , :alt => record['CreatedBy']['Name'], "class" => "glossy", :height => '32', :width => '32'), @serviceauth.instance_url+'/'+record['CreatedById'], :target => '_blank' %></td>
+			</tr>
+		<% end %>
+		</table>
+	<% else %>
+		<div style="display:block;padding:20px 0;text-align:center;width:100%;">
+			<h4>You don't have any published surveys</h4>
+		</div>		
 	<% end %>
-	</table>
+
+	<div style="display:block;padding:20px 0;">
+		<h3>Surveys shared with me</h3>
+	</div>
+
+	<% if(@respShared["records"].size > 0) %>
+		<table>
+		 <tr>
+		 	<th>Actions</th>
+		    <th>Name</th>
+		    <th>Status</th>
+		    <th>Description</th>
+		    <th>Created by</th>
+		 </tr>
+		<% @respShared["records"].each do |record| %>
+			<tr style="background:#ffffff" onMouseOver="this.style.background='#eeeeee';" onMouseOut="this.style.background='#ffffff';">
+				<td style="width:15%;">
+					<table style="width:100%;margin:0;">
+						<tr>
+							<td style="width:50%;padding:0;margin:0;"><%= link_to 'Edit', builder_path(:surveyid => record['Id']), :class => 'sexybutton sexysimple' %></td>
+							<td style="width:50%;padding:0;margin:0;"><% if(record['Preview_URL__c'] != nil) %> <a href="<%= record['Preview_URL__c'] %>" class="sexybutton sexysimple" target="_blank">Preview</a><% end %> </td>
+						</tr>
+					</table>
+				</td>
+				<td style="width:37%;"><a href="<%= @serviceauth.instance_url %>/<%=record['Id']%>" target="_blank" style="font-weight:bold;text-decoration:underline;"><%= record["Name"] %></a></td>
+				<td style="width:16%;"><%= record['Status__c'] %></td>
+				<td style="width:16%;"><%= record['Description__c'] %></td>
+				<td style="width:16%;"><%= record['CreatedDate'].to_date.strftime('%m/%d/%Y')  %>   <%= link_to image_tag(record['CreatedBy']['SmallPhotoUrl']+"?oauth_token="+@serviceauth.token , :alt => record['CreatedBy']['Name'], "class" => "glossy", :height => '32', :width => '32'), @serviceauth.instance_url+'/'+record['CreatedById'], :target => '_blank' %></td>
+			</tr>
+		<% end %>
+		</table>
+	<% else %>
+		<div style="display:block;padding:20px 0;text-align:center;width:100%;">
+			<h4>No surveys are being shared with you</h4>
+		</div>		
+	<% end %>
 
 </div>

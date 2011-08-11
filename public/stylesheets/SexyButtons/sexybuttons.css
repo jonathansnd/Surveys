@@ -258,7 +258,7 @@
 	position: relative; 
 	padding: 5px 10px 5px;
 	font: inherit;
-	font-size: 13px !important;
+	font-size: 12px !important;
 	font-style: normal !important; 
 	font-weight: bold !important; 
 	color: #fff !important;
@@ -441,6 +441,7 @@
 .sexybutton span.redo			{ background-image: url(images/icons/silk/arrow_redo.png) !important; }
 .sexybutton span.edit			{ background-image: url(images/icons/silk/pencil.png) !important; }
 .sexybutton span.calendar		{ background-image: url(images/icons/silk/date.png) !important; }
+.sexybutton span.tick		{ background-image: url(images/icons/silk/tick.png) !important; }
 .sexybutton span.user			{ background-image: url(images/icons/silk/user.png) !important; }
 .sexybutton span.settings		{ background-image: url(images/icons/silk/cog.png) !important; }
 .sexybutton span.cart			{ background-image: url(images/icons/silk/cart.png) !important; }

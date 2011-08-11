@@ -1,4 +1,4 @@
- require 'Surveys'
+require 'sforce/rest/Surveys'
 
 class SurveysController < ApplicationController
 
@@ -24,6 +24,7 @@ class SurveysController < ApplicationController
 
         instance_url = @serviceauth.instance_url
         @preview_url = instance_url+'/apex/QuestionLine?pid='+params[:surveyid]
+        @publish_url = reports_builder_path+'?surveyid='+params[:surveyid]
         @salesforce_url = instance_url+'/'+params[:surveyid]
 
         puts @resp
@@ -42,7 +43,6 @@ class SurveysController < ApplicationController
 
     end
 
-
   end
 
   def my_surveys
@@ -54,6 +54,7 @@ class SurveysController < ApplicationController
     #create the survey
     @resp = surveyService.get_user_surveys;
     @respShared = surveyService.get_shared_surveys;
+    @respPublished = surveyService.get_user_published_surveys;
 
     #display results
     @serviceauth = current_user.services.find(:first, :conditions => { :provider => 'forcedotcom' })

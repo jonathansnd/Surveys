@@ -23,7 +23,7 @@ $.Model.extend('Line',
         	success(linesarray);
         } 
         return linesarray;
-    },  
+    },
      /**
      * Retrieves a line data from your backend services.
      * @param {Object} params params that might refine your results.
@@ -90,16 +90,10 @@ $.Model.extend('Line',
      * @param {Function} error a callback that should be called with an object of errors.
      */
     destroy : function(id, success, error){
-    	var about = "";
-    	var line = Line.findOne({id:id});
-    	if (line) {
-    		about = line.about;
-    	}
+        Line.list.remove(id);
 		if (success) {
 			success();
 		}
-		
-        this.publish("destroyed", {id:id, about:about});
     },
     saveAll : function(){
         alert('implement Line.saveAll');

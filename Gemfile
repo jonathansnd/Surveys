@@ -7,6 +7,7 @@ gem 'will_paginate', '3.0.pre2'
 #gem 'rack-ssl', :require => 'rack/ssl'
 gem 'omniauth'
 gem 'httparty'
+gem 'savon'
 
 group :development do
   	gem 'rspec-rails', '2.5.0'

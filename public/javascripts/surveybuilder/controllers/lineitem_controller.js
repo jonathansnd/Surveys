@@ -19,15 +19,15 @@ jQuery.Controller.extend('Surveybuilder.Controllers.Lineitem',
 		        Surveybuilder.Controllers.Lineitem.lineitemDeleteRecursive(Lineitem.findOne({id:lineitem.childQuestion}));
 		    }
 		    if(lineitem.childAnswer){
-		        Surveybuilder.Controllers.Lineitem.lineidisplayConditionsanstemDeleteRecursive(Lineitem.findOne({id:lineitem.childAnswer}));
+		        Surveybuilder.Controllers.Lineitem.lineitemDeleteRecursive(Lineitem.findOne({id:lineitem.childAnswer}));
 		    }
              if(lineitem.childDisplayCondition){
-                Surveybuilder.Controllers.Lineitem.lineidisplayConditionsanstemDeleteRecursive(Lineitem.findOne({id:lineitem.childDisplayCondition}));
+                Surveybuilder.Controllers.Lineitem.lineitemDeleteRecursive(Lineitem.findOne({id:lineitem.childDisplayCondition}));
             }
 		    if(lineitem.nextLineitem){
 		        Surveybuilder.Controllers.Lineitem.lineitemDeleteRecursive(Lineitem.findOne({id:lineitem.nextLineitem}));
 		    }
-		    Lineitem.destroy(lineitem.id);
+		    lineitem.destroy();
         }
     },
     
@@ -89,7 +89,7 @@ jQuery.Controller.extend('Surveybuilder.Controllers.Lineitem',
             if(lineitemToDelete.childDisplayCondition){
                 Surveybuilder.Controllers.Lineitem.lineitemDeleteRecursive(Lineitem.findOne({id:lineitemToDelete.childDisplayCondition}));
             }
-        Lineitem.destroy(lineitemToDelete.id);
+        lineitemToDelete.destroy();
     },
     
     /**

@@ -1,4 +1,4 @@
-require 'Chatter'
+require 'sforce/rest/Chatter'
 
 class UsersController < ApplicationController
 
