@@ -26,7 +26,7 @@ class ForcePartner
 
 	    def partnerAPIClient
 		  	client = Savon::Client.new do
-		  		wsdl.document = "/Users/jonathanrico/rails/surveys_app/public/partner.wsdl"
+		  		wsdl.document = File.expand_path("../../../wsdls/partner.wsdl", __FILE__)
 			end
 			
 			puts 'partner Client actions : '

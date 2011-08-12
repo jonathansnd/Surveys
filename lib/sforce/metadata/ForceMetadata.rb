@@ -119,7 +119,7 @@ class ForceMetadata
 
 			#initalize metadata api
 		  	client = Savon::Client.new do
-		  		wsdl.document = "/Users/jonathanrico/rails/surveys_app/public/metadata.wsdl"
+		  		wsdl.document = File.expand_path("../../../wsdls/metadata.wsdl", __FILE__)
 		  		wsdl.endpoint = @metadataServerURL
 			end
 
