@@ -13,6 +13,12 @@ class Chatter
     @accesstoken = nil
   end
 
+  def print_response(name, response)
+    puts '>>>> action : '+name
+    puts '>>>> response : '+response.inspect
+    puts '>>>> response Code : '+response.code.to_s
+  end
+
   def set_headers
     Chatter.headers 'Authorization' => "OAuth #{@serviceauth.token}"
   end
@@ -24,6 +30,17 @@ class Chatter
   def get_users_info(id)
     set_headers
     @resp = Chatter.get(root_url+"/users/"+id)
+
+    print_response('get_users_info',@resp)
+
+    if(@resp.code == 401)
+      ForceUtils.refreshToken(@current_user)
+      initialize(@current_user)
+      @resp = get_users_info(id)
+    elsif (@resp.code != 200)
+      raise StandardError, "unknown failure getting uri with #{@resp.inspect}"
+    end
+
     return @resp
   end
 
@@ -34,8 +51,20 @@ class Chatter
   def get_newsfeed(id)
     set_headers
     @resp = Chatter.get(root_url+"/feeds/news/"+id)
+
+    print_response('get_newsfeed',@resp)
+
+    if(@resp.code == 401)
+      ForceUtils.refreshToken(@current_user)
+      initialize(@current_user)
+      @resp = get_newsfeed(id)
+    elsif (@resp.code != 200)
+      raise StandardError, "unknown failure getting uri with #{@resp.inspect}"
+    end
+
     log_response(@resp, "get_newsfeed")
     return @resp
+
   end
     
   def get_my_newsfeed
@@ -58,7 +87,6 @@ class Chatter
     Chatter.post(root_url+"/feed-items/"+comment.feeditemid+"/comments?text="+CGI::escape(comment.body))
   end
   
-  
   #pre rel chatter page results returns the incorrect json response. it should be [feeditems][items]
   #like everything else, but it is just [items] so lets wrap it to make it consistent
   def get_page_of_feed(refpath)
@@ -76,4 +104,5 @@ class Chatter
     CHATTER_LOGGER.debug(resp)
     CHATTER_LOGGER.debug("\n------END "+method_name+"---------\n")
   end
+
 end

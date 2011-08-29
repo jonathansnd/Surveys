@@ -39,6 +39,14 @@ module SessionsHelper
     deny_access unless signed_in?
   end
 
+  def serviceauth
+    if(current_user.nil?)
+      return nil
+    else 
+      return current_user.services.find(:first, :conditions => { :provider => 'forcedotcom' })
+    end
+  end
+
   def validate_session
 
   end

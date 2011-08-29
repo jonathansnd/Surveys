@@ -1,6 +1,7 @@
 require 'httparty'
 require 'base64'
 require 'rexml/document'
+require 'sforce/rest/ForceUtils'
 
 class Surveys
 
@@ -30,13 +31,21 @@ class Surveys
   def get_user_surveys
 
     puts '>>> SURVEY LIST >>> '
-
     set_headers
+
     #create survey
     soql = "SELECT Id, Name, Status__c, Description__c,Published_Survey__c,Published_Survey__r.Name,Published_Survey__r.Num_of_Responses__c, Site_URL__c,Preview_URL__c, CreatedDate, CreatedBy.SmallPhotoUrl,CreatedById,CreatedBy.Name from Survey__c where OwnerId = '#{@serviceauth.uid}' and type__c = 'Draft' order by CreatedDate desc"
     resp = Surveys.get(root_url+"/query/?q=#{CGI::escape(soql)}")
-
     print_response('get_user_surveys',resp)
+
+    if(resp.code == 401)
+      ForceUtils.refreshToken(@current_user)
+      initialize(@current_user)
+      resp = get_user_surveys
+    elsif (resp.code != 200)
+      raise StandardError, "unknown failure getting uri with #{resp.inspect}"
+    end
+
     return resp
 
   end
@@ -51,6 +60,15 @@ class Surveys
     resp = Surveys.get(root_url+"/query/?q=#{CGI::escape(soql)}")
 
     print_response('get_shared_surveys',resp)
+
+    if(resp.code == 401)
+      ForceUtils.refreshToken(@current_user)
+      initialize(@current_user)
+      resp =  get_shared_surveys
+    elsif (resp.code != 200)
+      raise StandardError, "unknown failure getting uri with #{resp.inspect}"
+    end
+
     return resp
 
   end
@@ -65,6 +83,15 @@ class Surveys
     resp = Surveys.get(root_url+"/query/?q=#{CGI::escape(soql)}")
 
     print_response('get_user_published_surveys',resp)
+
+    if(resp.code == 401)
+      ForceUtils.refreshToken(@current_user)
+      initialize(@current_user)
+      resp = get_user_published_surveys
+    elsif (resp.code != 200)
+      raise StandardError, "unknown failure getting uri with #{resp.inspect}"
+    end
+
     return resp
 
   end
@@ -89,6 +116,14 @@ class Surveys
 
     print_response('get_survey_xml (Get Body)',resp)
 
+    if(resp.code == 401)
+      ForceUtils.refreshToken(@current_user)
+      initialize(@current_user)
+      resp = get_survey_xml(sid)
+    elsif (resp.code != 200)
+      raise StandardError, "unknown failure getting uri with #{resp.inspect}"
+    end
+
     return resp
 
   end
@@ -104,6 +139,14 @@ class Surveys
     resp = Surveys.get(root_url+"/query/?q=#{CGI::escape(soql)}")
 
     print_response('get_survey (Get Survey)',resp)
+
+    if(resp.code == 401)
+      ForceUtils.refreshToken(@current_user)
+      initialize(@current_user)
+      resp = get_survey(sid)
+    elsif (resp.code != 200)
+      raise StandardError, "unknown failure getting uri with #{resp.inspect}"
+    end
 
     return resp
 
@@ -122,6 +165,14 @@ class Surveys
 
     print_response('get_survey_questionlines (Get Survey Question Lines)',resp)
 
+    if(resp.code == 401)
+      ForceUtils.refreshToken(@current_user)
+      initialize(@current_user)
+      resp = get_survey_questionlines(sid)
+    elsif (resp.code != 200)
+      raise StandardError, "unknown failure getting uri with #{resp.inspect}"
+    end
+
     return resp
 
   end
@@ -129,7 +180,7 @@ class Surveys
 
   def get_survey_questions(sid)
 
-    puts '>>> GET SURVEY QUESTION Lines >>> '+sid
+    puts '>>> GET SURVEY Question Lines >>> '+sid
 
     set_headers
 
@@ -138,6 +189,14 @@ class Surveys
     resp = Surveys.get(root_url+"/query/?q=#{CGI::escape(soql)}")
 
     print_response('get_survey_questions (Get Survey Questions)',resp)
+
+    if(resp.code == 401)
+      ForceUtils.refreshToken(@current_user)
+      initialize(@current_user)
+      resp = get_survey_questions(sid)
+    elsif (resp.code != 200)
+      raise StandardError, "unknown failure getting uri with #{resp.inspect}"
+    end
 
     return resp
 
@@ -154,6 +213,14 @@ class Surveys
     resp = Surveys.get(root_url+"/query/?q=#{CGI::escape(soql)}")
 
     print_response('get_survey_answer_sequences (Get Answer Sequences)',resp)
+
+    if(resp.code == 401)
+      ForceUtils.refreshToken(@current_user)
+      initialize(@current_user)
+      resp = get_survey_answer_sequences(sid)
+    elsif (resp.code != 200)
+      raise StandardError, "unknown failure getting uri with #{resp.inspect}"
+    end
 
     return resp
 
@@ -175,6 +242,14 @@ class Surveys
     #update survey
     result = Surveys.post(root_url+"/sobjects/survey__c/"+sid+"/?_HttpMethod=PATCH", options)
     print_response('publish_survey (Publish Survey)',result)
+
+    if(result.code == 401)
+      ForceUtils.refreshToken(@current_user)
+      initialize(@current_user)
+      return publish_survey(sid,customObjectName)
+    elsif (result.code != 200)
+      raise StandardError, "unknown failure getting uri with #{result.inspect}"
+    end
 
     soql = "SELECT Id,Name,Active_Version__c,Published_Survey__c,Published_Survey_RDF__c from Survey__c where id = \'#{sid}\' limit 1"
     result = Surveys.get(root_url+"/query/?q=#{CGI::escape(soql)}")
@@ -244,7 +319,7 @@ class Surveys
 
       #update survey
       result = Surveys.post(root_url+"/sobjects/survey__c/"+surveyid+"/?_HttpMethod=PATCH", options)
-    
+        
       print_response('Update survey result : ',result)
 
       if(result.code == 204)

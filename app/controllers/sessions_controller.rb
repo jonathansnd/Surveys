@@ -60,8 +60,8 @@ class SessionsController < ApplicationController
         @authhash[:token] = omniauth['credentials']['token']
         @authhash[:token_secret] = '' #Not used only for LinkedIn / Twitter
         @authhash[:token_refresh] = omniauth['credentials']['refresh_token']
-        @authhash[:sf_consumer_key] = omniauth['credentials']['consumer_key']
-        @authhash[:sf_consumer_secret] = omniauth['credentials']['consumer_secret']
+        #@authhash[:sf_consumer_key] = omniauth['credentials']['consumer_key']
+        #@authhash[:sf_consumer_secret] = omniauth['credentials']['consumer_secret']
 
         #Set Env vars
         user = User.find_by_user_id(@authhash[:uid])
@@ -119,6 +119,7 @@ class SessionsController < ApplicationController
           #get forcedotcom service and update informaiton
           serviceauth = user.services.find(:first, :conditions => { :provider => service_route })
           serviceauth.token = @authhash[:token]
+          serviceauth.token_refresh = @authhash[:token_refresh]
           serviceauth.user_type = @authhash[:user_type]
           serviceauth.active = @authhash[:active]
           serviceauth.last_status_update = @authhash[:last_status_body]

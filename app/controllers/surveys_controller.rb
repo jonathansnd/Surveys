@@ -2,7 +2,7 @@ require 'sforce/rest/Surveys'
 
 class SurveysController < ApplicationController
 
-  before_filter :authenticate, :only => [:builder,:preview,:export,:createsurvey]
+  before_filter :authenticate, :only => [:builder,:preview,:export,:createsurvey,:my_surveys,:upsert]
 
   def builder
     @title = 'Survey Builder'
