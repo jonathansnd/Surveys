@@ -13,17 +13,19 @@ $.Controller.extend('Surveybuilder.Controllers.Survey',
     	this.loadSurvey(params['id'], 
     	    //success
     		function(){
+    			// attach components and tabs controller after everything has loaded
+    			$('#components').surveybuilder_components();
+    			$('.ui-tabs-nav').surveybuilder_tabs();
+    			
     			OpenAjax.hub.publish('survey.render', {});
     			var mainLine = Line.findOne({about:Survey.findOne({id:1}).surveyLine});
-                if(mainLine != null){
-    			 //OpenAjax.hub.publish('tabs.openLine', {id:mainLine.id});
-                }
-
+    			OpenAjax.hub.publish('tabs.openLine', {id:mainLine.id});
     			OpenAjax.hub.publish('survey.loadFinished', {});
     		},
     		//error
     		function(){
     			alert('ERROR: failed to load survey');
+    			OpenAjax.hub.publish('survey.loadFailed', {});
     		});
     },
 
@@ -46,9 +48,7 @@ $.Controller.extend('Surveybuilder.Controllers.Survey',
         // add controller(s) to all the rendered lineitems
         $('#survey .lineitem').surveybuilder_lineitem();
         $('#survey .logicComponent').surveybuilder_logic_component();
-        $('#survey .displayComponent').surveybuilder_display_component();
         $('#survey .branch').surveybuilder_branch();
-        $('#survey .displayCondition').surveybuilder_display_condition();
     },
     
     'survey.export subscribe': function(event, params) {
@@ -61,18 +61,13 @@ $.Controller.extend('Surveybuilder.Controllers.Survey',
     exportSurvey: function(){
         if ($('#export').length > 0) {
             // close the existing export tab if it exists
-            OpenAjax.hub.publish('tabs.close', {id:'export'});
+      		OpenAjax.hub.publish('tabs.close', {id:'export'});      
         }
 
-        //add in an export tab and populate with exported survey
-        $('.ui-tabs-nav').after(
-            '<div id="export"><textarea >' + 
-            $.View('//surveybuilder/views/survey/show_rdf', {survey:Survey.findOne({id:1}), lines:Line.findAll(), date:new Date()}).replace(/^\s*[\n\f\r]/gm, '')
-            + '</textarea></div>'          
-        );
+		//add in an export tab and populate with exported survey
+        $('.ui-tabs-nav').after('<div id="export"><textarea >' + $.View('//surveybuilder/views/survey/show_rdf', {survey:Survey.findOne({id:1}), lines:Line.findAll(), date:new Date()}).replace(/^\s*[\n\f\r]/gm, '') + '</textarea></div>');
         $('#surveyBuilderTabs').tabs('add' , "#export" , 'export');
     },
-
     ".survey-form input change": function(el, ev){
         this.surveyFormChange(el, ev);
     },
@@ -109,13 +104,34 @@ $.Controller.extend('Surveybuilder.Controllers.Survey',
 	/*
      * Handlers for static Line events
 	 */ 
-    "line.destroyed subscribe": function(event, params){
-		// delete any branches to this line		
-		Lineitem.findAll({lineId:params.id}, Surveybuilder.Controllers.Lineitem.deleteBranches);
-		
+    "line.destroyed subscribe": function(event, line){
+		// delete any branches to this line
+		branches = Branch.findByLine(line);		
+		Surveybuilder.Controllers.Lineitem.deleteBranches(branches);
     },
     
     'line.discardChanges subscribe': function(event, params) {
     	Surveybuilder.Controllers.Line.discardChanges(params.id);
-    }   
+    },
+    
+    "predicates.update subscribe": function(event, params) {
+    	this.updateOperands(params.id, params.value);
+    },
+    
+    "objects.update subscribe": function(event, params) {
+    	this.updateOperands(params.id, params.value);
+    },
+    
+    updateOperands: function(id, value) {
+    	var conditionalBranches = ConditionalBranch.findAll();
+    	for (var i = 0; i < conditionalBranches.length; i++) {
+			// update operands if they referenced the updated object
+    		if (conditionalBranches[i].getLeftOperandID() == id) {
+    			conditionalBranches[i].attr("leftOperand", value);
+    		}
+    		if (conditionalBranches[i].getRightOperandID() == id) {
+    			conditionalBranches[i].attr("rightOperand", value);
+    		}
+    	}
+    }
 });

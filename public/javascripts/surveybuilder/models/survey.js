@@ -61,17 +61,6 @@ $.Model.extend('Survey',
 			}
 		}
     },
-
-    /**
-     * Save off survey builder definition only in local storage
-     * @param {Number} id The id of the survey to save off
-     * @param {function} success callback function that indicates a successful remote save
-     * @param {function} error callback function that should be called on failure
-     */
-    saveLocal : function(id, success, error){
-		DATA_CONNECTOR.save_survey_local(id, $.View('//surveybuilder/views/survey/show_rdf', {survey:Survey.findOne({id:1}), lines:Line.findAll(), date:new Date()}).replace(/^\s*[\n\f\r]/gm, ''), success, error);
-    },
-
     /**
      * Save off survey builder definition using the provided data connector
      * @param {Number} id The id of the survey to save off
@@ -132,21 +121,19 @@ $.Model.extend('Survey',
 		survey.attr('deident', SURVEY_UTILS.getElementText(surveyRDF, "showDeIdentifiedMessage"));
 		survey.attr('reviewAnswers', SURVEY_UTILS.getElementText(surveyRDF, "reviewAnswers"));
 		survey.attr('questionsPerPage', SURVEY_UTILS.getElementText(surveyRDF, "questionsPerPage"));
-		survey.attr('mainLineTitle', SURVEY_UTILS.getElementText(surveyRDF, "mainLineTitle"));
 		survey.attr('surveyLine', SURVEY_UTILS.getElementAttribute(surveyRDF, 'surveyLine', 'rdf:resource'));
 		survey.save();
 		
 		//only grab the top level Lines
-		var mainLine;
 		RDF.children().filter('[nodeName="Line"]').each(function(index) { 
-			Line.loadFromXML($(this));
+			Line.createFromXML($(this));
 		});
 		
 		//resolve branch displayNames and lineIds
-		Lineitem.findAll({},function(lineitems) {
+		/*Lineitem.findAll({},function(lineitems) {
 			steal.dev.log("resolving branch displayNames and lineIds")
 			for (var id in lineitems) {
-				if (lineitems[id].type === 'branch') {
+				if (lineitems[id].subtype === 'branch') {
 					var branchTarget = Line.findOne({about:lineitems[id].about});
 					if (branchTarget) {
 						lineitems[id].attr('displayName', branchTarget.title);
@@ -156,7 +143,7 @@ $.Model.extend('Survey',
 				}
 			}
 			
-		});
+		});*/
 		
 		// populate cache
 		Survey.saveToCache();
@@ -165,4 +152,8 @@ $.Model.extend('Survey',
 	}
 },
 /* @Prototype */
-{})
+{
+	setChild: function(child) {
+		this.attr("childId", ((child) ? child.id : null));
+	}
+})

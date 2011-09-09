@@ -9,14 +9,22 @@ $.Controller.extend('Surveybuilder.Controllers.Buttons',
 /* @Prototype */
 {
     init: function(){
+        $('#buttons .button').button();
+        $('#buttons').buttonset();
+        
+        // TODO: switch to toggle for same button
         if ($.jStorage.get('hideHowto')){
             $('#showHowto').show();
+            $('#hideHowto').hide();
         }
         else{
             $('#hideHowto').show();
+            $('#showHowto').hide();
         }
     },
+    
     'survey.loadFinished subscribe': function(event, params) {
+    	$('#static-message').slideUp();
     	this.disableSaveButton();
         this.disableSaveSFButton();
     },
@@ -24,39 +32,39 @@ $.Controller.extend('Surveybuilder.Controllers.Buttons',
     'buttons.disableSaveButton subscribe': function(event, params) {
     	this.disableSaveButton();
     }, 
-
-    'buttons.disableSFSaveButton subscribe': function(event, params) {
+ 
+     'buttons.disableSFSaveButton subscribe': function(event, params) {
         this.disableSaveButton();
         this.disableSaveSFButton();
-    }, 
-
+    },    
     /**
      * Disable the save button
      */
     disableSaveButton: function() {
-    	$('#saveAll').addClass('disabled').attr("disabled", true);
+    	$('#saveAll').button('disable');
     },
-
+ 
     disableSaveSFButton: function() {
         $('#saveSF').addClass('disabled').attr("disabled", true);
     },
-        
+       
     'buttons.enableSaveButton subscribe': function(event, params) {
     	this.enableSaveButton();
         this.enableSaveSFButton();
     },
-        
+    
     /**
      * Enable the save button
      */
      enableSaveButton: function(){
-     	$('#saveAll').removeClass('disabled').attr("disabled", false);
+     	// Enable button and remove ui-states to prevent carryover styling from old selections/clicks. Using blur() wasn't enough.
+     	$('#saveAll').button('enable').removeClass("ui-state-focus ui-state-hover");  
      },
 
      enableSaveSFButton: function(){
-        $('#saveSF').removeClass('disabled').attr("disabled", false);
+        $('#saveSF').button('enable').removeClass("ui-state-focus ui-state-hover");  
      },
-          
+         
     'buttons.showAjaxLoader subscribe': function(event, params) {
     	this.showAjaxLoader();
     },
@@ -65,7 +73,7 @@ $.Controller.extend('Surveybuilder.Controllers.Buttons',
      * Show the ajax loader
      */
     showAjaxLoader: function() {
-    	$('#ajax-loader').show();
+    	$('#ajax-loader').css("display", "inline-block");
     },
     
     'buttons.hideAjaxLoader subscribe': function(event, params) {
@@ -80,14 +88,13 @@ $.Controller.extend('Surveybuilder.Controllers.Buttons',
     },
     
     "#saveAll click": function(el, ev){
-
 	    // disable save button and show loader
 		OpenAjax.hub.publish('buttons.disableSaveButton', {});
 	    OpenAjax.hub.publish('buttons.showAjaxLoader', {});
     	//save off a copy of the internal representations
         Survey.saveToCache();
-        //save representaiton in local storage
-        Survey.saveLocal(1, 
+        //save external representation remotely
+        Survey.saveRemote(1, 
 			function(){
 				// hide all "content changed" indicators
 				OpenAjax.hub.publish('tabs.markTabsAsUnchanged', {});
@@ -98,7 +105,7 @@ $.Controller.extend('Surveybuilder.Controllers.Buttons',
 				alert('remote save failure');
 			}
 		);
-        
+		return false;
     },
 
     "#saveSF click": function(el, ev){
@@ -120,12 +127,13 @@ $.Controller.extend('Surveybuilder.Controllers.Buttons',
                 }, 
                 function(){
                     OpenAjax.hub.publish('buttons.hideAjaxLoader', {});
+                    alert('remote save failure');
                 }
             );
 
         }
     },
-    
+
     "#exportSurvey click": function(el, ev){
 	    OpenAjax.hub.publish('survey.export', {});
         ev.stopPropagation();
@@ -145,7 +153,7 @@ $.Controller.extend('Surveybuilder.Controllers.Buttons',
         $('#hideHowto').show();
     },
     '#collapseAll click': function(el, ev){
-        $('.hideable:visible').slideUp();
-        $('.ui-icon-triangle-1-s:visible').removeClass('ui-icon-triangle-1-s').addClass('ui-icon-triangle-1-e');
+        $('#tabs-container .hideable:visible').slideUp();
+        $('#tabs-container .ui-icon-triangle-1-s:visible').removeClass('ui-icon-triangle-1-s').addClass('ui-icon-triangle-1-e');
     }
 });

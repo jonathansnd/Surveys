@@ -15,23 +15,29 @@ $.Controller.extend('Surveybuilder.Controllers.LogicComponent',
 		var currentLineitem = Lineitem.findOne({id:this.element.attr('id')});
 		this.element.find('.branchTarget').html($.View('//surveybuilder/views/logicComponent/show_branchTargets', {lines:Line.findAll(), lineitem:currentLineitem, parentLine:parentLine}));
 		// enable comboboxes
+		var rightOperandSelector = this.element.find('.right-operand-dataType');
 		this.configureCombobox(this.element.find('.leftOperand'), 'survey:predicate');
-		this.configureCombobox(this.element.find('.rightOperand'), this.element.find('.right-operand-dataType').val());
+		this.configureCombobox(this.element.find('.rightOperand'), rightOperandSelector.val());
 	},
 	
-	configureCombobox: function(el, dataType) {
+	configureCombobox: function(el, dataType, options) {
 		var operand = el.val();
 		var name = el.attr('name');
 		var parent = el.parent();
-		//alert('lc '+name+' '+operand);
 		switch (dataType) {
 			case 'survey:object':
-				parent.html($.View('//surveybuilder/views/logicComponent/show_branchOperand', {operand:operand, operandDatatype:dataType, name:name, options:surveyBuilder.OBJECTS}));
+				var operandID = el.find("option:selected").attr("data-object-id");
+				var selectedPredicateID = el.closest('.lineitem').find('.leftOperand option:selected').attr("data-predicate-id");
+				var options = $.map(surveyBuilder.OBJECTS, function(val, i) {
+					// filter out objects that aren't under the selected predicate
+					return (val.parent === selectedPredicateID) ? val : null;
+				});
+				parent.html($.View('//surveybuilder/views/logicComponent/show_branchOperand', {operand:{value:operand, id:operandID}, operandDatatype:dataType, name:name, options:options}));
 				parent.children().first().combobox();
 				break;
 			case 'survey:predicate':
-				parent.html($.View('//surveybuilder/views/logicComponent/show_branchOperand', {operand:operand, operandDatatype:dataType, name:name, options:surveyBuilder.PREDICATES}));
-				//alert('lc '+parent.children().first().attr('name'));
+				var operandID = el.find("option:selected").attr("data-predicate-id");
+				parent.html($.View('//surveybuilder/views/logicComponent/show_branchOperand', {operand:{value:operand, id:operandID}, operandDatatype:dataType, name:name, options:surveyBuilder.PREDICATES}));
 				parent.children().first().combobox();
 				break;
 			default:
@@ -42,14 +48,14 @@ $.Controller.extend('Surveybuilder.Controllers.LogicComponent',
 	},
 	
 	'predicates.update subscribe': function(event, params) {
-		lists = this.element.find('.predicate-list');
+		var lists = this.element.find('.predicate-list');
 		for (var i=0; i < lists.length; i+=1) {
 			this.configureCombobox($(lists[i]), 'survey:predicate');
 		}
 	},	
 
 	'objects.update subscribe': function(event, params) {
-		lists = this.element.find('.object-list');
+		var lists = this.element.find('.object-list');
 		for (var i=0; i < lists.length; i+=1) {
 			this.configureCombobox($(lists[i]), 'survey:object');
 		}
@@ -76,6 +82,13 @@ $.Controller.extend('Surveybuilder.Controllers.LogicComponent',
 		var parentLine = Line.findOne({id:this.element.closest('.parent').attr('id')});
 		var branchTargetEl = this.element.find(".branchTarget");
 		branchTargetEl.html($.View('//surveybuilder/views/logicComponent/show_branchTargets', {lines:Line.findAll(), lineitem:currentLineitem, parentLine:parentLine}));
+	},
+
+	".leftOperand change": function(el, ev) {
+		var condition = el.closest('.condition');
+		var dataType = condition.find('.right-operand-dataType').val();
+		var operandEl = el.closest('.condition').find('.rightOperand');
+		this.configureCombobox(operandEl, dataType);
 	},
 
 	".right-operand-dataType change": function(el, ev) {

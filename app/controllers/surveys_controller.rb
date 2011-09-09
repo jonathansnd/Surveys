@@ -7,8 +7,9 @@ class SurveysController < ApplicationController
   def builder
     @title = 'Survey Builder'
 
-    defaultSurveyDef = '<Survey><rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/"><Survey><surveyLine rdf:resource="#mainline"></surveyLine></Survey><Line rdf:about="#mainline"><dc:title>Main Section</dc:title></Line></rdf:RDF></Survey>'
+   #defaultSurveyDef = '<Survey><id> </id><rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/"><Survey rdf:about="1"><surveyLine rdf:resource="#mainline"></surveyLine></Survey><Line rdf:about="#mainline"><internalName>Main Section</internalName></Line></rdf:RDF></Survey>'
 
+    defaultSurveyDef = '<Survey><rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/"><Survey><surveyLine rdf:resource="#mainline"></surveyLine></Survey><Line rdf:about="#mainline"><internalName>Main Section</internalName></Line></rdf:RDF></Survey>'
     begin
 
       if(params[:surveyid] != nil)
@@ -30,7 +31,6 @@ class SurveysController < ApplicationController
         puts @resp
         
       else
-
         #@resp = nil
         @resp = defaultSurveyDef
 

@@ -23,7 +23,7 @@ $.Model.extend('Line',
         	success(linesarray);
         } 
         return linesarray;
-    },
+    },  
      /**
      * Retrieves a line data from your backend services.
      * @param {Object} params params that might refine your results.
@@ -33,12 +33,7 @@ $.Model.extend('Line',
     findOne : function(params, success, error){
     	var result = null;
     	if (params.about) {
-    		lineList = Line.list;
-    		for (var i=0; i< lineList.length; i++) {
-    			if (lineList[i].about === params.about) {
-    				result = lineList[i];
-    			}
-    		}
+    		result = Line.list.match("about", params.about)[0];
     	}
     	else {
         	if (params.id) {
@@ -78,7 +73,7 @@ $.Model.extend('Line',
 		// calling model with the new id, which will in turn add it to our
 		// $.Model.list store.  Because of this, we do not create a new instance
 		// of Line here, since it would end up being duplicated in our store.
-		attrs.id = new Date().getTime();
+		attrs.id = SURVEY_UTILS.generateUUID();
 		if (success) {
 			success(attrs);
 		}
@@ -89,15 +84,12 @@ $.Model.extend('Line',
      * @param {Function} success a callback function that indicates a successful destroy.
      * @param {Function} error a callback that should be called with an object of errors.
      */
-    destroy : function(id, success, error){
-
-        Line.list.remove(id);
-
+	destroy : function(id, success, error){
+		Line.list.remove(id);
 		if (success) {
 			success();
 		}
-    },
-    
+	},
     saveAll : function(){
         alert('implement Line.saveAll');
     },
@@ -143,19 +135,33 @@ $.Model.extend('Line',
         return line;
     },
     
-    loadFromXML: function(node) {
+    /**
+    * Load in Line information from an XML representation
+    * @param {Object} node XML node to parse
+    */
+    createFromXML: function(node) {
     	steal.dev.log("loading line from xmlDoc");
 		line = new Line({type:'line'});
 		line.attr('about', node.attr('rdf:about'));
+		line.attr('internalName', SURVEY_UTILS.getElementText(node, "internalName"));
 		line.attr('title', SURVEY_UTILS.getElementText(node, "dc:title"));
 		line.attr('questionsPerPage', SURVEY_UTILS.getElementText(node, "questionsPerPage"));
+		
+		if (!line.attr("internalName") && line.attr("title")) {
+			// if there is a title, but no InternalName, copy it over
+			line.attr("internalName", line.attr("title")); 
+		}
+		
 		line.save();
 		
 		//only grab the top level Lineitems
-		Lineitem.loadFromXML(node.children().filter('[nodeName="rdf:li"]'), line);
-    }
-    
+		Lineitem.createFromXML(node.children().filter('[nodeName="rdf:li"]'), line);
+    }    
     
 },
 /* @Prototype */
-{})
+{
+	setChild: function(child) {
+		this.attr("childId", ((child) ? child.id : null));
+	}
+})

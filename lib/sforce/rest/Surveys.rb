@@ -247,7 +247,7 @@ class Surveys
       ForceUtils.refreshToken(@current_user)
       initialize(@current_user)
       return publish_survey(sid,customObjectName)
-    elsif (result.code != 200)
+    elsif (result.code != 200 && result.code != 204)
       raise StandardError, "unknown failure getting uri with #{result.inspect}"
     end
 
@@ -322,11 +322,15 @@ class Surveys
         
       print_response('Update survey result : ',result)
 
-      if(result.code == 204)
-        bSurveySaved = true
-         @resp = {:id => surveyid, :code => result.code, :operation => 'update'}
+      if(result.code == 401)
+        ForceUtils.refreshToken(@current_user)
+        initialize(@current_user)
+        return create(params)
+      elsif(result.code == 204)
+          bSurveySaved = true
+          @resp = {:id => surveyid, :code => result.code, :operation => 'update'}
       else
-        @resp = {:id => '', :code => result.code, :operation => 'update'}
+          @resp = {:id => '', :code => result.code, :operation => 'update'}
       end
 
     else

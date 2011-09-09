@@ -13,36 +13,31 @@ $.Model.extend('Lineitem',
 	attributes : { 
 		branchTarget : 'string'
 	},
-    /**
-     * Retrieves lineitems data from your backend services.
-     * @param {Object} params params that might refine your results.
-     * @param {Function} success a callback function that returns wrapped lineitem objects.
-     * @param {Function} error a callback function for an error in the ajax request.
-     */
-    findAll : function(params, success, error){
-        var lineitemsarray = [];
+	
+	/**
+	 * Check to see if a Model is an instance of this Class
+	 * @param {Object} model Model to check
+	 */
+	isInstance: function(model) {
+		return model instanceof this;
+	},
 
-		//TODO: move this logic out of here 
-        if(params && params.lineId){
+	/* Retrieve Lineitems.
+	* @param {Object} params params that might refine your results.
+	* @param {Function} success a callback function that returns wrapped lineitem objects.
+	* @param {Function} error a callback function for an error in the ajax request.
+	*/
+	findAll : function(params, success, error){
+		var resultsArray = [];
 
-            var lineitems = Lineitem.list;
-            for (var i=0; i<lineitems.length; i++){
-                if(lineitems[i].lineId == params.lineId && lineitems[i].type === 'branch'){
-                    lineitemsarray.push(lineitems[i]);
-                }
-            }
-
-        }
-        else{
-            lineitemsarray = Lineitem.list;
-        }
-
+		resultsArray =  this.list.grep(this.callback("isInstance"));
+		
 		if (success) {
-        	success(lineitemsarray);
-       }
-       
-       return lineitemsarray;
-    },
+			success(resultsArray);
+		}
+
+		return resultsArray;
+	},
     /**
      * Retrieves a lineitem data from backend services.
      * @param {Object} params params that might refine your results.
@@ -51,7 +46,7 @@ $.Model.extend('Lineitem',
      */
     findOne : function(params, success, error){
     	if (params.id) {
-    		return Lineitem.list.get(params.id)[0]; //TODO why is list.get returning an array?
+    		return this.list.get(params.id)[0]; //TODO why is list.get returning an array?
     	}
     	else {
     		return null;
@@ -67,11 +62,11 @@ $.Model.extend('Lineitem',
      */
     update : function(id, attrs, success, error){
        //Since we are using $.Model.list to store Lineitems, just return the model from the list
-		lineitem = Lineitem.findOne({id:id});
+		var model = this.findOne({id:id});
 		if (success) {
-			success(lineitem);
+			success(model);
 		}
-		return lineitem;
+		return model
     },
     
     updatePredicates: function(id, value) {
@@ -89,7 +84,7 @@ $.Model.extend('Lineitem',
     			// rebuild the array
     			surveyBuilder.PREDICATES = [];
     			for (var key in surveyBuilder.PREDICATE_MAP) {
-    				surveyBuilder.PREDICATES.push(surveyBuilder.PREDICATE_MAP[key]);
+    				surveyBuilder.PREDICATES.push({value:surveyBuilder.PREDICATE_MAP[key], id:key});
     			}
     		}
     	}
@@ -97,24 +92,26 @@ $.Model.extend('Lineitem',
     		// new entry
     		if (value) {
 				surveyBuilder.PREDICATE_MAP[id] = value;
-				surveyBuilder.PREDICATES.push(value);
+				surveyBuilder.PREDICATES.push({value:value, id:id});
     		}
     	}
     	
-		OpenAjax.hub.publish('predicates.update', {});
+		OpenAjax.hub.publish('predicates.update', {id:id, value:value});
     },
     
-    updateObjects: function(id, value) {
+    updateObjects: function(parentID, id, value) {
     	if (surveyBuilder.OBJECT_MAP[id]) {
     		// already an entry for this id
-    		if (surveyBuilder.OBJECT_MAP[id] !== value) {
+    		if (surveyBuilder.OBJECT_MAP[id].value !== value || surveyBuilder.OBJECT_MAP[id].parent !== parentID) {
     			// value has changed
     			if (!value) {
     				// null value causes delete
     				delete surveyBuilder.OBJECT_MAP[id];			
     			}
     			else {
-	    			surveyBuilder.OBJECT_MAP[id] = value;
+    				// update value and parent
+	    			surveyBuilder.OBJECT_MAP[id].value = value;
+	    			surveyBuilder.OBJECT_MAP[id].parent = parentID;
     			}
     			// rebuild the array
     			surveyBuilder.OBJECTS = [];
@@ -126,12 +123,12 @@ $.Model.extend('Lineitem',
     	else {
     		// new entry
     		if (value) {
-				surveyBuilder.OBJECT_MAP[id] = value;
-				surveyBuilder.OBJECTS.push(value);
+				surveyBuilder.OBJECT_MAP[id] = {value:value, parent:parentID, id:id};
+				surveyBuilder.OBJECTS.push(surveyBuilder.OBJECT_MAP[id]);
     		}
     	}
     	
-		OpenAjax.hub.publish('objects.update', {});
+		OpenAjax.hub.publish('objects.update', {id:id, value:value, parentID:parentID});
     },
     
     /**
@@ -143,12 +140,11 @@ $.Model.extend('Lineitem',
     destroy : function(id, success, error){
         // remove any predicate entries this lineitem had
         this.updatePredicates(id, null);
-
-        Lineitem.list.remove(id);
-        if(success){
-            success();
+        
+        this.list.remove(id);
+        if(success) {
+        	success();
         }
-
     },
     /**
      * Creates a lineitem.
@@ -178,221 +174,74 @@ $.Model.extend('Lineitem',
     saveAllToCache : function() {
     	// build an array of Lineitem attributes, so we don't recreate the actual 
     	// Classes when loading them from cache
-    	var attrArray = $.map(Lineitem.findAll(), function(lineitem, i){
-    		return lineitem.attrs();
+    	var attrArray = $.map(this.findAll(), function(model, i){
+    		return model.attrs();
     	});
-
-		$.jStorage.set('lineitems', attrArray);
+    	
+		$.jStorage.set(this.fullName, attrArray);
     },
     /**
      * Load Lineitem from the local cache.
      * @param {Number} id the id of the Lineitem to load
      */
     loadFromCache : function(id){
-        var cachedLineitems = $.jStorage.get('lineitems');
-        var lineitem = Lineitem.findOne(id);
-        if (cachedLineitems && cachedLineitems[id]){
+        var cachedModels = $.jStorage.get(this.fullName);
+        var model = this.findOne(id);
+        if (cachedModels && cachedModels[id]){
             // lineitem has a previous save state, so destroy the old and load from cache
-            lineitem.destroy();
-            lineitem = new Lineitem(cachedLineitems[id]);
-            lineitem.save();
+            model.destroy();
+            model = this.newInstance(cachedModels[id]);
+            model.save();
         }
         else {
 	        // lineitem does not have a previous save state
-            lineitem.destroy();
+            model.destroy();
         }
     },
     
     /**
      * Create Lineitems from their XML representation
-     * @param {Object} lineitems array of Lineitems in xml form 
+     * @param {Object} lineitemsXML array of Lineitems in xml form 
      * @param {Object} parent the parent of these Lineitems
      */
-    loadFromXML: function(lineitems, parent) {
-    	steal.dev.log("loading lineitems from xml");
-    	if (!lineitems) {
+    createFromXML: function(lineitemsXML, parent) {
+    	steal.dev.log("creating lineitems from xml");
+    	if (!lineitemsXML) {
     		return;
     	}
     	
     	var newLineitems = [];
     	
-    	lineitems.each(function(index) { 
+    	lineitemsXML.each(function(index) { 
 	    	var currentLineitem = null;
-    		var lineitem = jQuery(this).children().first();
-    		var tagName = lineitem.get(0).nodeName;
-    
-            newLineitems[index] = new Lineitem();
-            currentLineitem = newLineitems[index];
+    		var lineitemXML = jQuery(this).children().first();
+    		var tagName = lineitemXML.get(0).nodeName;
+    		try {
+    			currentLineitem = new window[tagName]; //TODO:
+    		} 
+    		catch (e)
+    		{
+    			alert("Error while loading in survey: Unrecognized tag: " + tagName );
+    			return false;
+    		}
+    		
+    		// populate from xml
+    		currentLineitem.loadFromXML(lineitemXML);
+    		
+    		// add to array
+    		newLineitems[index] = currentLineitem;
     		
     		// create links
     		if (index == 0) {
     			// link first child to parent
-    			if (parent.subType === 'gridSelectOne') {
-    				if (tagName === 'LabelAnswer') {
-    					parent.attr('childAnswer', currentLineitem.id);
-    				}
-    				if (tagName === 'SelectOneQuestion') {
-    					parent.attr('childQuestion', currentLineitem.id);
-    				}
-    			}
-    			else {
-    				parent.attr('child', currentLineitem.id);
-    			}
-    			currentLineitem.attr("parentId", parent.id);
-    			currentLineitem.attr("parentType", parent.type);
+    			currentLineitem.setParent(parent);
+    			parent.setChild(currentLineitem);
     		}
     		else {
     			// link siblings
-    			currentLineitem.attr("prevLineitem", newLineitems[index-1].id);
-    			newLineitems[index-1].attr('nextLineitem', currentLineitem.id).save();
-    		}
-    		
-    		switch(tagName) {
-    			case "LabelAnswer":
-					currentLineitem.attr('type', "answer");
-					currentLineitem.attr('subType', "label");
-					currentLineitem.attr('displayName', "Fixed Choice");
-					currentLineitem.attr('answerText', SURVEY_UTILS.getElementText(lineitem, "answerText"));
-					currentLineitem.attr('answerProperty', SURVEY_UTILS.getElementText(lineitem, "answerProperty"));
-					currentLineitem.attr('answerObject', SURVEY_UTILS.getElementAttribute(lineitem, 'answerObject', 'rdf:resource')); 
-					currentLineitem.attr('answerNote', SURVEY_UTILS.getElementText(lineitem, "answerNote"));
-    				break;
-    			case "TextAnswer":
-					currentLineitem.attr('type', "answer");
-					currentLineitem.attr('subType', "text");
-					currentLineitem.attr('displayName', "Free Text");
-					currentLineitem.attr('answerProperty', SURVEY_UTILS.getElementText(lineitem, "answerProperty"));
-					currentLineitem.attr('dataType', SURVEY_UTILS.getElementAttribute(lineitem, 'dataType', 'rdf:resource'));
-					currentLineitem.attr('answerNote', SURVEY_UTILS.getElementText(lineitem, "answerNote"));
-					currentLineitem.attr('answerLabel', SURVEY_UTILS.getElementText(lineitem, "answerLabel"));
-    				break;
-    			case "SimpleQuestion":
-					currentLineitem.attr('type', "question");
-					currentLineitem.attr('subType', "simple");
-					currentLineitem.attr('displayName', "Simple");
-					currentLineitem.attr('about', lineitem.attr('rdf:about'));
-                    currentLineitem.attr('isRequired', SURVEY_UTILS.getElementText(lineitem, "isRequired"));
-					currentLineitem.attr('questionText', SURVEY_UTILS.getElementText(lineitem, "questionText"));
-					currentLineitem.attr('defaultAnswerForEstimation', SURVEY_UTILS.getElementText(lineitem, "defaultAnswerForEstimation"));
-					currentLineitem.attr('answerProperty', SURVEY_UTILS.getElementAttribute(lineitem, 'answerProperty', 'rdf:resource'));
-					currentLineitem.attr('dataType', SURVEY_UTILS.getElementAttribute(lineitem, 'datatype', 'rdf:resource'));
-					currentLineitem.attr('answerLabel', SURVEY_UTILS.getElementText(lineitem, "answerLabel"));
-					currentLineitem.attr('answerNote', SURVEY_UTILS.getElementText(lineitem, "answerNote"));
-    				break;
-    			case "SelectOneQuestion":
-					currentLineitem.attr('type', "question");
-					currentLineitem.attr('subType', "selectOne");
-					currentLineitem.attr('displayName', "Multiple Choice");
-					currentLineitem.attr('about', lineitem.attr('rdf:about'));
-					currentLineitem.attr('questionText', SURVEY_UTILS.getElementText(lineitem, "questionText"));
-					currentLineitem.attr('answerProperty', SURVEY_UTILS.getElementAttribute(lineitem, 'answerProperty', 'rdf:resource'));
-					currentLineitem.attr('defaultAnswerForEstimation', SURVEY_UTILS.getElementText(lineitem, "defaultAnswerForEstimation"));
-					currentLineitem.attr('displayType', SURVEY_UTILS.getElementText(lineitem, "displayType"));
-					currentLineitem.attr('answersId', SURVEY_UTILS.getElementAttribute(lineitem, 'questionAnswers', 'rdf:resource'));
-					
-					//grab answers if needed
-					if (!currentLineitem.answersId) {
-						Lineitem.loadFromXML(SURVEY_UTILS.getElements(lineitem, 'rdf:li'), currentLineitem);
-					}
-    				break;
-    			case "SelectMultipleQuestion":
-					currentLineitem.attr('type', "question");
-					currentLineitem.attr('subType', "selectMultiple");
-					currentLineitem.attr('displayName', "All That Apply");
-					currentLineitem.attr('about', lineitem.attr('rdf:about'));
-					currentLineitem.attr('questionText', SURVEY_UTILS.getElementText(lineitem, "questionText"));
-					currentLineitem.attr('answerProperty', SURVEY_UTILS.getElementAttribute(lineitem, 'answerProperty', 'rdf:resource'));
-					currentLineitem.attr('defaultAnswerForEstimation', SURVEY_UTILS.getElementText(lineitem, "defaultAnswerForEstimation"));
-					/* TODO: reusable answer sequences
-					var answersResource = SURVEY_UTILS.getElementAttribute(lineitem, 'questionAnswers', 'rdf:resource');
-					if (answersResource) {
-						params.answersResource = answersResource;
-					}*/
-
-					//grab answers
-					Lineitem.loadFromXML(SURVEY_UTILS.getElements(lineitem, 'rdf:li'), currentLineitem);
-    				break;
-    			case "GridSelectOneQuestion":
-					currentLineitem.attr('type', "question");
-					currentLineitem.attr('subType', "gridSelectOne");
-					currentLineitem.attr('displayName', "Grid");
-					currentLineitem.attr('about', lineitem.attr('rdf:about'));
-					currentLineitem.attr('questionText', SURVEY_UTILS.getElementText(lineitem, "questionText"));
-
-					//grab answers
-					Lineitem.loadFromXML(SURVEY_UTILS.getElements(SURVEY_UTILS.getElement(lineitem, 'GridAnswers'), 'rdf:li'), currentLineitem);
-					//grab questions
-					Lineitem.loadFromXML(SURVEY_UTILS.getElements(SURVEY_UTILS.getElement(lineitem, 'GridQuestions'), 'rdf:li'), currentLineitem);
-    				break;
-    			case "Branch":
-					currentLineitem.attr('type', "branch");
-					currentLineitem.attr('subType', "branch");
-					currentLineitem.attr('about', jQuery(lineitem).find('[nodeName="line"]').first().attr("rdf:resource")); //TODO use utils
-    				break;
-    			case "ConditionalBranch":
-					currentLineitem.attr('type', "logicComponent");
-					currentLineitem.attr('subType', "conditionalBranch");
-					currentLineitem.attr('displayName', "Conditional Branch");
-					//params.branchCondition = SURVEY_UTILS.getElementTextHTMLEncoded(lineitem, "branchCondition");
-					currentLineitem.attr('branchTarget', SURVEY_UTILS.getElementAttribute(lineitem, 'line', 'rdf:resource'));
-					// TODO: for now we only have a single condition and are 
-					// treating it as a part of this lineitem
-					var operator = SURVEY_UTILS.getElement(lineitem, 'operator');
-					var leftOperand = SURVEY_UTILS.getElement(lineitem, 'leftOperand');
-					var rightOperand = SURVEY_UTILS.getElement(lineitem, 'rightOperand');
-					currentLineitem.attr('operator', SURVEY_UTILS.getElementTextHTMLEncoded(operator, 'value'));
-					currentLineitem.attr('leftOperandDataType', SURVEY_UTILS.getElementText(leftOperand, 'datatype'));
-					if (currentLineitem.leftOperandDataType === 'survey:predicate' || currentLineitem.leftOperandDataType === 'survey:object') {
-						currentLineitem.attr('leftOperand', SURVEY_UTILS.getElementAttribute(leftOperand, 'value', 'rdf:resource'));
-					}
-					else {
-						currentLineitem.attr('leftOperand', SURVEY_UTILS.getElementText(leftOperand, "value"));
-					}
-					currentLineitem.attr('rightOperandDataType', SURVEY_UTILS.getElementText(rightOperand, 'datatype'));
-					if (currentLineitem.rightOperandDataType === 'survey:predicate' || currentLineitem.rightOperandDataType === 'survey:object') {
-						currentLineitem.attr('rightOperand', SURVEY_UTILS.getElementAttribute(rightOperand, 'value', 'rdf:resource'));
-					}
-					else {
-						currentLineitem.attr('rightOperand', SURVEY_UTILS.getElementText(rightOperand, "value"));
-					}
-					
-    				break;
-                case "DisplayCondition":
-                    currentLineitem.attr('type', "displayCondition");
-                    currentLineitem.attr('subType', "condition");
-                    currentLineitem.attr('displayName', "Display Condition");
-                    var operator = SURVEY_UTILS.getElement(lineitem, 'operator');
-                    var leftOperand = SURVEY_UTILS.getElement(lineitem, 'leftOperand');
-                    var rightOperand = SURVEY_UTILS.getElement(lineitem, 'rightOperand');
-
-                    currentLineitem.attr('operator', SURVEY_UTILS.getElementTextHTMLEncoded(operator, 'value'));
-                    currentLineitem.attr('leftOperandDataType', SURVEY_UTILS.getElementText(leftOperand, 'datatype'));
-                    if (currentLineitem.leftOperandDataType === 'survey:predicate' || currentLineitem.leftOperandDataType === 'survey:object') {
-                        currentLineitem.attr('leftOperand', SURVEY_UTILS.getElementAttribute(leftOperand, 'value', 'rdf:resource'));
-                    }
-                    else {
-                        currentLineitem.attr('leftOperand', SURVEY_UTILS.getElementText(leftOperand, "value"));
-                    }
-                    currentLineitem.attr('rightOperandDataType', SURVEY_UTILS.getElementText(rightOperand, 'datatype'));
-                    if (currentLineitem.rightOperandDataType === 'survey:predicate' || currentLineitem.rightOperandDataType === 'survey:object') {
-                        currentLineitem.attr('rightOperand', SURVEY_UTILS.getElementAttribute(rightOperand, 'value', 'rdf:resource'));
-                    }
-                    else {
-                        currentLineitem.attr('rightOperand', SURVEY_UTILS.getElementText(rightOperand, "value"));
-                    }
-
-                    break;
-                case "DisplayLogic":
-                    currentLineitem.attr('type', "displayComponent");
-                    currentLineitem.attr('subType', "displayLogic");
-                    currentLineitem.attr('displayName', "Display Logic");
-                    currentLineitem.attr('displayLogic',SURVEY_UTILS.getElementText(lineitem, "value"));
-
-                    Lineitem.loadFromXML(SURVEY_UTILS.getElements(lineitem, 'rdf:li'), currentLineitem);
-                    break;
-    			default:
-    				steal.dev.log("unrecognized lineitem type: " + tagName );
-    				return;  //TODO: what to do on error?
+    			currentLineitem.setPrev(newLineitems[index-1]);
+    			newLineitems[index-1].setNext(currentLineitem);
+    			newLineitems[index-1].save();
     		}
     		currentLineitem.save();
     		parent.save();
@@ -402,18 +251,45 @@ $.Model.extend('Lineitem',
 /* @Prototype */
 {
 	setup : function(attributes) {
-        // we add in the id here since we are not tied into a remote service that would generate it for us
-		this.attr("id", new Date().getTime());
+		// we add in the id here since we are not tied into a remote service that would generate it for us
+		this.attr("id", SURVEY_UTILS.generateUUID());
 		this._super(attributes);
 	},
-	setAnswerProperty : function(newAnswerProperty) {
-		// initial autocomplete hack
-		Lineitem.updatePredicates(this.id, newAnswerProperty);
-		return newAnswerProperty;
+	
+	setParent: function(parent) {
+		//set new parent
+		this.attr("parentId", ((parent) ? parent.id : null));
+		this.attr("parentType", ((parent) ? parent.type : null));
 	},
+	
+	setChild: function(child) {
+		this.attr("childId", ((child) ? child.id : null));
+	},
+	
+	setPrev: function(prev) {
+		this.attr("prevLineitem", ((prev) ? prev.id : null));
+	},
+	
+	setNext: function(next) {
+		this.attr("nextLineitem", ((next) ? next.id : null));
+	},
+	
 	setAnswerObject : function(newAnswerObject) {
 		// initial autocomplete hack
-		Lineitem.updateObjects(this.id, newAnswerObject);
+		Lineitem.updateObjects(this.findParentID(), this.id, newAnswerObject);
 		return newAnswerObject;
+	},
+	findParentID: function() {
+		//TODO inefficient, cache parent ID on all children?
+		var parent = null;
+		var current = this;
+		var prevID = this.prevLineitem;
+		
+		while (prevID) {
+			current = Lineitem.findOne({id:prevID});
+			prevID = current.prevLineitem;
+		}
+
+		return current.parentId;
 	}
 })

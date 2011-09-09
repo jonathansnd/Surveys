@@ -6,7 +6,12 @@ steal.plugins(
 	'jquery/model/list',
 	'jquery/dom/form_params')		// form data helper
 	
-	.css('resources/facebox/facebox','resources/css/redmond/jquery-ui-1.8.6.custom', 'resources/css/main')	// loads styles, overwrites styles from right to left
+	.css('resources/css/reset-min',
+		'resources/facebox/facebox', 
+		'resources/css/button-container/jquery-ui-1.8.14.custom', // jQuery UI theme for buttons 
+		'resources/css/tabs-container/jquery-ui-1.8.14.custom', // jQuery UI theme for tabs
+		'resources/css/survey-container/jquery-ui-1.8.14.custom', // jQuery UI theme for everything else
+		'resources/css/main')	// loads styles, overwrites styles from right to left
 
 	.resources('js/jquery-ui-1.8.10.custom.js')
     .resources('js/application.js')
@@ -15,8 +20,14 @@ steal.plugins(
 	.resources('js/jstorage.min.js')
     .resources('facebox/facebox.js')
 
-	.models('survey','line', 'lineitem', 'question', 'answer', 'logicComponent', 'displayComponent','displayCondition')	// loads files in models folder 
+	.models('survey',
+			'questionType', 'answerType', 'logicComponentType', 
+			'line', 
+			'lineitem', 
+			'answer', 'labelAnswer', 'textAnswer', 
+			'question', 'simpleQuestion', 'selectOneQuestion', 'selectMultipleQuestion', 'gridSelectOneQuestion',
+			'logicComponent', 'branch', 'conditionalBranch')	// load models
 
-	.controllers('main', 'component_list', 'components','survey','line','tabs', 'lineitem', 'buttons', 'logicComponent', 'branch', 'lineitem_content', 'displayComponent','displayCondition')	// loads files in controllers folder
+	.controllers('main', 'component_list', 'components','survey','line','tabs', 'lineitem', 'buttons', 'logicComponent', 'branch', 'lineitem_content')	// loads files in controllers folder
 
 	.views();	// adds views to be added to build

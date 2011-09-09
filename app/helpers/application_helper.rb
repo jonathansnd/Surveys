@@ -7,7 +7,7 @@ module ApplicationHelper
 
    # Return a title on a per-page basis.
    def title
-    base_title = "Cloud Survey"
+    base_title = "UCSF Surveys"
 
     if @title.nil?
       base_title

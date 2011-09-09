@@ -14,20 +14,14 @@ $.Controller.extend('Surveybuilder.Controllers.Branch',
 {
 	init: function(){
 		steal.dev.log('new branch controller instance created');
-		this.updateName(this.options.model);
+		this.updateName(this.options.model.internalName);
 	},
-    "{model} title" : function(updatedLine, ev, newTitle) {
+    "{model} internalName" : function(updatedLine, ev, newInternalName) {
     	//update branch object
-		this.updateName(updatedLine);
+		this.updateName(newInternalName);
 	},
-	updateName: function(updatedLine) {
-		branchToUpdate = Lineitem.findOne({id:this.element.attr('id')});
-		if (branchToUpdate && (branchToUpdate.displayName !== updatedLine.title || branchToUpdate.about !== updatedLine.about)) {
-			branchToUpdate.attr("displayName", updatedLine.title);
-			branchToUpdate.attr("about", updatedLine.about);
-			branchToUpdate.save();
-			this.element.find('.display-name').text(updatedLine.title);
-			this.element.find('input[name="displayName"]').val(updatedLine.title);
-		}
+	updateName: function(newInternalName) {
+		this.element.find('.line-name').text(newInternalName);
+		this.element.find('input[name="lineName"]').val(newInternalName);
 	}
 });

@@ -8,8 +8,8 @@ $.Controller.extend('Surveybuilder.Controllers.Tabs',
 },
 /* @Prototype */
 {
-	updateTitle: function(line) {
-    	$('#surveyBuilderTabs a[href="#' + line.id + '"]').children().text(line.title);
+	updateName: function(line) {
+    	$('#surveyBuilderTabs a[href="#' + line.id + '"]').children().text(line.internalName);
     },
        
     init: function(){
@@ -19,22 +19,12 @@ $.Controller.extend('Surveybuilder.Controllers.Tabs',
     	//calls to the tabs() function fail.  For now using the id for selection,
     	//but this does not make sense on a prototype init
     	$('#surveyBuilderTabs').tabs({
-		    tabTemplate: '<li><a href="#{href}"><span class="ui-icon ui-icon-gear changes-made" title="content changed"></span><span>#{label}</span></a><a class="close-tab"><span class="ui-icon ui-icon-closethick close-icon"></span></a></li>',
+		    tabTemplate: '<li><a href="#{href}"><span class="ui-icon ui-icon-gear changes-made" title="content changed"></span><span>#{label}</span></a><span class="close-tab ui-icon ui-icon-closethick close-icon"></span></li>',
 		    add: function(event, ui) {
 		        $('#surveyBuilderTabs').tabs('select', '#' + ui.panel.id);
 		    }
 		});
 		
-		// Make tabs resizable
-        $('#surveyBuilderTabs').resizable({
-            handles: 'e',
-            alsoResize: '.ui-tabs-nav, #tabsTopper, #tabsTopperHelper',
-            stop: function(event, ui){
-                // resize sets a specific height, but we want it to be able to grow after a resize
-                $('#surveyBuilderTabs').css("height", "auto");
-            }
-        });
-        
         // Make tabs able to receive lines dropped on them 
         $(".ui-tabs-nav").droppable({
 		    accept: '.line',
@@ -44,6 +34,17 @@ $.Controller.extend('Surveybuilder.Controllers.Tabs',
 		        OpenAjax.hub.publish('tabs.openLine', {id:lineId});
 		    }
 		});
+    },
+    
+    /**
+     * Reposition the tabs-container based off the tab list height
+     */
+    repositionTabContent: function() {
+    	$("#tabs-container").css("top", ($("#buttons").innerHeight() + this.element.innerHeight() + 10) + "px");
+    },
+    
+    "{window} resize": function() {
+    	this.repositionTabContent();
     },
     
     'tabs.openLine subscribe': function(event, params) {
@@ -62,18 +63,18 @@ $.Controller.extend('Surveybuilder.Controllers.Tabs',
         }
         var tabsDiv = $('#surveyBuilderTabs');
         tabsDiv.append($.View('//surveybuilder/views/line/show', {line:currentLine}));
-        tabsDiv.tabs('add' , "#"+id , currentLine.title);
+        tabsDiv.tabs('add' , "#"+id , currentLine.internalName);
         // add line-controller to newly opened line
         $('#'+id).surveybuilder_line();
         // add controllers to each newly rendered lineitem
         $('#'+id + ' .lineitem').surveybuilder_lineitem();
         $('#'+id + ' .logicComponent').surveybuilder_logic_component();
-        $('#'+id + ' .displayComponent').surveybuilder_display_component();
-        $('#'+id + ' .displayCondition').surveybuilder_display_condition();
         $('#'+id + ' .branch').each(function() {
-        	line = Line.findOne({id:$(this).attr('data-line')});
+        	line = Line.findOne({about:$(this).attr('data-lineAbout')});
         	$(this).surveybuilder_branch({model:line});
         });
+        
+        this.repositionTabContent();
     },
     
     'tabs.close subscribe': function(event, params) {
@@ -94,6 +95,7 @@ $.Controller.extend('Surveybuilder.Controllers.Tabs',
                 return;
             }
         });
+        this.repositionTabContent();
     },
     ".ui-icon-document click": function(el, ev){
         OpenAjax.hub.publish('survey.export', {});
@@ -116,6 +118,7 @@ $.Controller.extend('Surveybuilder.Controllers.Tabs',
             var tabs = $('#surveyBuilderTabs');
             tabs.tabs('remove', tabs.tabs('option', 'selected'));
         }
+        this.repositionTabContent();
         ev.stopPropagation();
     },
     
@@ -137,7 +140,7 @@ $.Controller.extend('Surveybuilder.Controllers.Tabs',
     
     'line.updated subscribe': function(event, line) {
     	steal.dev.log("Tabs: line.updated");
-		this.updateTitle(line); 
+		this.updateName(line); 
     	this.markTabAsChanged(line.id);
     	OpenAjax.hub.publish('buttons.enableSaveButton', {});
     },
@@ -167,7 +170,7 @@ $.Controller.extend('Surveybuilder.Controllers.Tabs',
      * @param {Number} id the id of the tab to change
      */
     markTabAsChanged: function(id){
-    	$('#surveyBuilderTabs a[href="#' + id + '"] .ui-icon-gear').show();
+    	$('#surveyBuilderTabs a[href="#' + id + '"]').siblings('.ui-icon-gear').show();
     	OpenAjax.hub.publish('buttons.enableSaveButton', {});
     },
     

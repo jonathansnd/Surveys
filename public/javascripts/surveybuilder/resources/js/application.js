@@ -1,23 +1,33 @@
 $(function(){
 
    $('.info-icon').live('click', function(){
-       var infoDiv = $($(this).attr("data-infoId"));
+      var infoDiv = $($(this).attr("data-infoId"));
       jQuery.facebox(infoDiv.html());
+      return false;
    });
 
-    // Hide details on lines/questions/answers/etc
-    $(".ui-icon-triangle-1-s").live("click", function(){
-        $(this).parent().children('.hideable').slideUp();
-        $(this).parent().children('.lineitem-form').find('.hideable').slideUp();
-        $(this).removeClass('ui-icon-triangle-1-s').addClass('ui-icon-triangle-1-e');
+  	// Hide drop-down menus when user clicks elsewhere  
+    $('html').click(function() {
+    	// close all active drop-down menus
+    	$('.drop-down.active').each(function(i) {
+			$(this).removeClass('active ui-corner-tl').addClass("ui-corner-left");
+			$(this).siblings('.drop-down-list').hide();
+		});
     });
 
-    // Expand details on lines/questions/answers/etc
-    $('.ui-icon-triangle-1-e').live('click', function(){
-        $(this).parent().children('.hideable').slideDown();
-        $(this).parent().children('.lineitem-form').find('.hideable').slideDown();
-        $(this).removeClass('ui-icon-triangle-1-e').addClass('ui-icon-triangle-1-s');
-    });
+	// Hide/Show details on lines/questions/answers/etc
+	//TODO: move into controller
+	$(".toggle").live("click", function() {
+		$(this).siblings(".hideable").toggle("fast");
+		$(this).siblings(".lineitem-form").find(".hideable").toggle("fast");
+		var indicator = $(this).find(".toggle-indicator");
+		if (indicator.hasClass("ui-icon-triangle-1-s")) {
+			indicator.removeClass("ui-icon-triangle-1-s").addClass("ui-icon-triangle-1-e");
+		}
+		else {
+			indicator.removeClass("ui-icon-triangle-1-e").addClass("ui-icon-triangle-1-s");
+		}
+	});
 
 	// combobox widget from the jQueryUI site
 	(function( $ ) {
@@ -31,6 +41,7 @@ $(function(){
 					.insertAfter( select )
 					.val( value )
 					.autocomplete({
+						appendTo: "#tabs-container",  //TODO: edited to append to tabs-container so it will pick up the same styles, but this limits this to a specific location
 						delay: 0,
 						minLength: 0,
 						source: function( request, response ) {

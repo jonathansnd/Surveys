@@ -1,9 +1,0 @@
-<DisplayLogic>
-	<value><%= lineitem.displayLogic %></value>
-    <DisplayConditions>
-        <% if (lineitem.child) {%>
-            <% var childLineitem = Lineitem.findOne({id:lineitem.child}) %>
-            <%= $.View('//surveybuilder/views/lineitem/show_rdf', {lineitem:childLineitem}) %>
-        <% } %>
-    </DisplayConditions>
-</DisplayLogic>
