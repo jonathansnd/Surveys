@@ -16,7 +16,7 @@ $.Model.extend('LogicComponentType',
      * @param {Function} error a callback function for an error in the ajax request.
      */
     findAll : function(params, success, error){
-    	logicComponents = [new LogicComponentType({'type':'logicComponent','subType':'ConditionalBranch', 'displayName':'Conditional Branch'})]; 
+    	logicComponents = [new LogicComponentType({'type':'logicComponent','subType':'conditionalBranch', 'displayName':'Conditional Branch'})]; 
         if (success) {
         	success(logicComponents);
         }
