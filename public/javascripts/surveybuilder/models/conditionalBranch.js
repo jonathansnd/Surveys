@@ -2,7 +2,7 @@ LogicComponent.extend("ConditionalBranch",
 	/* @Static */
 	{
 		defaults: {
-			subType: "conditionalBranch",
+			subType: "ConditionalBranch",
 			displayName: "Conditional Branch",
 			leftOperandDataType: "survey:predicate"
 		},
