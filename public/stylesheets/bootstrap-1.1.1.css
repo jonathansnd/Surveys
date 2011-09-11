@@ -1,4 +1,4 @@
-/*!
+3/*!
  * Bootstrap v1.1.1
  *
  * Copyright 2011 Twitter, Inc
@@ -385,7 +385,7 @@ table {
   margin-left: 740px;
 }
 html, body {
-  background-color: #fff;
+  background: #1797c0 url('/images/gradient_body.png') repeat-x;
 }
 body {
   margin: 0;
@@ -422,7 +422,7 @@ body {
   margin-left: 240px;
 }
 a {
-  color: #0069d6;
+  color: #333;
   text-decoration: none;
   line-height: inherit;
   font-weight: inherit;
@@ -1206,28 +1206,28 @@ table .headerSortUp.purple, table .headerSortDown.purple {
   overflow: visible;
 }
 .topbar .fill {
-  background: #222;
-  background-color: #222222;
+  background: #1797C0;
+  background-color: #1797C0;
   background-repeat: repeat-x;
-  background-image: -khtml-gradient(linear, left top, left bottom, from(#333333), to(#222222));
-  background-image: -moz-linear-gradient(top, #333333, #222222);
-  background-image: -ms-linear-gradient(top, #333333, #222222);
-  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #333333), color-stop(100%, #222222));
-  background-image: -webkit-linear-gradient(top, #333333, #222222);
-  background-image: -o-linear-gradient(top, #333333, #222222);
-  background-image: linear-gradient(top, #333333, #222222);
+  background-image: -khtml-gradient(linear, left top, left bottom, from(#0cf), to(#1797C0));
+  background-image: -moz-linear-gradient(top, #0cf, #1797C0);
+  background-image: -ms-linear-gradient(top, #ee0cfe, #1797C0);
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #0cf), color-stop(100%, #1797C0));
+  background-image: -webkit-linear-gradient(top, #0cf, #1797C0);
+  background-image: -o-linear-gradient(top, #0cf, #1797C0);
+  background-image: linear-gradient(top, #0cf, #1797C0);
   -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25), inset 0 -1px 0 rgba(0, 0, 0, 0.1);
   -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25), inset 0 -1px 0 rgba(0, 0, 0, 0.1);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25), inset 0 -1px 0 rgba(0, 0, 0, 0.1);
 }
 .topbar a {
-  color: #bfbfbf;
+  color: #fff;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
 }
 .topbar a:hover, .topbar ul li.active a {
   background-color: #333;
-  background-color: rgba(255, 255, 255, 0.05);
-  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #eee;
   text-decoration: none;
 }
 .topbar h3 {
@@ -1380,7 +1380,7 @@ table .headerSortUp.purple, table .headerSortDown.purple {
   font-weight: bold;
 }
 .topbar ul li ul {
-  background-color: #333;
+  background-color: #1797C0;
   float: left;
   display: none;
   position: absolute;
@@ -1414,7 +1414,7 @@ table .headerSortUp.purple, table .headerSortDown.purple {
   clear: both;
   font-weight: normal;
   line-height: 19px;
-  color: #bbb;
+  color: #fff;
 }
 .topbar ul li ul li a:hover {
   background-color: #333;
@@ -1424,9 +1424,9 @@ table .headerSortUp.purple, table .headerSortDown.purple {
 .topbar ul li ul li.divider {
   height: 1px;
   overflow: hidden;
-  background: #222;
-  background: rgba(0, 0, 0, 0.2);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: #eee;
+  background: rgba(255, 255, 255, 0.5);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.9);
   margin: 5px 0;
 }
 .topbar ul li ul li span {
@@ -1459,10 +1459,12 @@ table .headerSortUp.purple, table .headerSortDown.purple {
   line-height: 27px;
 }
 footer {
-  margin-top: 17px;
-  padding-top: 17px;
   border-top: 1px solid #eee;
+  background-color:#fff;
+  width:940px;
+  text-align:center;
 }
+
 .page-header {
   margin-bottom: 17px;
   border-bottom: 1px solid #ddd;

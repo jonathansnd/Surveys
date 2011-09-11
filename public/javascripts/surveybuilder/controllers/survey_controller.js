@@ -20,6 +20,7 @@ $.Controller.extend('Surveybuilder.Controllers.Survey',
     			OpenAjax.hub.publish('survey.render', {});
     			var mainLine = Line.findOne({about:Survey.findOne({id:1}).surveyLine});
     			OpenAjax.hub.publish('tabs.openLine', {id:mainLine.id});
+                $('#surveyBuilderTabs').tabs('select', '#survey');
     			OpenAjax.hub.publish('survey.loadFinished', {});
     		},
     		//error

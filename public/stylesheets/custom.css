@@ -1,146 +1,14 @@
-body {
-  background: #eee;
-}
+#appContainer{
+  
+  width: 95%;
+  min-width:950px;
+  background-color:#fff;
+  padding:10px; 
+  margin:0 auto;
+  border: 1px solid #eee;
+  border-bottom-left-radius:10px;
+  border-bottom-right-radius:10px;
 
-header {
-  padding-top: 20px;
-}
-
-header img {
-  padding: 1em;
-  background: #fff;
-}
-
-section {
-  margin-top: 1em;
-  font-size: 110%;
-  padding: 20px;
-  background: #fff;
-}
-
-section h1 {
-  font-size: 200%;
-}
-
-/* Links */
-
-a {
-  color: #000;
-  text-decoration: none;
-}
-
-a:hover {
-  color: #aaa;
-  text-decoration: underline;
-}
-
-a:visited {
-  color: #000;
-}
-
-/* Navigation */
-
-nav {
-  float: right;
-}
-
-nav {
-  background-color: white;
-  padding: 0 0.7em;
-  white-space: nowrap;
-}
-
-nav ul {
-  margin: 0;
-  padding: 10px 10px;
-}
-
-nav ul li {
-  list-style-type: none;
-  display: inline-block;
-  padding: 0.2em 5px;
-}
-
-nav ul li a {
-  padding: 0 5px;
-  font-weight: bold;
-}
-
-nav ul li a:visited {
-  color: #000;
-}
-
-nav ul li a:hover {
-  color: #aaa;
-  text-decoration: underline;
-}
-
-/* Sign up button */
-
-a.signup_button {
-  margin-left: auto;
-  margin-right: auto;
-  display: block;
-  text-align: center;
-  width: 190px;
-  color: #fff;
-  background: #6D6E71;
-  font-size: 150%;
-  font-weight: bold;
-  padding: 20px;
-}
-
-/* Round corners */
-
-.round {
-  -moz-border-radius:    10px;
-  -webkit-border-radius: 10px;
-  border-radius:         10px;
-}
-
-/* Footer */
-
-footer {
-  text-align: center;
-  margin-top: 10px;
-  width: 950px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-footer nav {
-  float: none;
-}
-
-/* User show page */
-
-table.profile {
-  width: 100%;
-  margin-bottom: 0;
-}
-
-td.main {
-  width: 70%;
-  padding: 1em;
-  vertical-align:top;
-}
-
-td.sidebar {
-  width: 30%;
-  padding: 1em;
-  vertical-align: top;
-  background: #ffc;
-  vertical-align:top;
-}
-
-.profile img.gravatar {
-  border: 1px solid #999;
-  margin-bottom: -15px;
-}
-
-/* User new page */
-div.field, div.actions {
-  margin-bottom: 10px;
 }
 
 /* Custom Style Sheets */
@@ -183,23 +51,4 @@ div.field, div.actions {
 #error_explanation ul li {
   font-size: 12px;
   list-style: square;
-}
-
-ul.users {
-  margin-top: 1em;
-}
-
-.users li {
-  list-style: none;
-}
-
-.detailsLink{
-  
-  font-weight:bold;
-  text-decoration:underline;
-}
-
-.actionlink{
-  color:#0066CC;
-  text-decoration:underline;
 }

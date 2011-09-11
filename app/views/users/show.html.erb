@@ -1,3 +1,4 @@
+<div id="appContainer">
 <div class="container">
 <div class="row">
 	<div class="span16">
@@ -26,44 +27,44 @@
 
 			</td>
 
-			<td class="sidebar round">
+			<td>
 				
+				<table>
+							
 				<% if @userInfo[0] == nil %>
-					<div><strong>About Me</strong></div>
-					<br/>
-					<div><i><%= @userInfo["aboutMe"] %> </i></div>
-					<br/>
-					<div><strong>Chatter : </strong> <a href="<%= @serviceauth.instance_url %>/<%= @userInfo["id"] %>" target="_blank" class="detailsLink">Full Profile</a></div>
-					<br/>
-					<div><strong>Name : </strong> <%= @userInfo["name"] %></div>
-					<div><strong>Email : </strong> <%= @userInfo["email"] %></div>
+					<tr><td><strong>About Me</strong></td></tr>
+					<tr><td><i><%= @userInfo["aboutMe"] %> </i></td></tr>
+					<tr><td><strong>Chatter : </strong> <a href="<%= @serviceauth.instance_url %>/<%= @userInfo["id"] %>" target="_blank" class="detailsLink">Full Profile</a></td></tr>
+					<tr><td><strong>Name : </strong> <%= @userInfo["name"] %></td></tr>
+					<tr><td><strong>Email : </strong> <%= @userInfo["email"] %></td></tr>
 					<% @userInfo["phoneNumbers"].each do |ph| %>
-					  	<div>
+					  	<tr><td>
 							<b>Phone <%= ph["type"]%>:</b>
 							<!-- tel protocol only works on an actual phone, 
 								 not the simulator -->
 							<a href='tel:<%= ph["number"] %>' 
 								rel="external"><%= ph["number"] %></a>
-						</div>
+						</td></tr>
 					<% end %>
-					<br/>
 
-					<div><b>Location: </b></div>
+					<tr><td><b>Location: </b></td></tr>
 
-					<div>
+					<tr><td>
 					<%= @userInfo["address"]["street"] %>,
 					<%= @userInfo["address"]["city"] %> 
 					<%= @userInfo["address"]["state"] %>
-					</div>
-					<br/>
-
-					<div><strong>Manager Name : </strong> <%= @userInfo["ManagerName"] %></div>
+					</td></tr>
+					<tr><td><strong>Manager Name : </strong> <%= @userInfo["ManagerName"] %></td></tr>
 				<% end %>
 
+				</table>
 			</td>
 		</tr>
 		</table>
 
 	</div>
 </div>
+
+</div>
+
 </div>

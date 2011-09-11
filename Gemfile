@@ -8,6 +8,7 @@ gem 'will_paginate', '3.0.pre2'
 gem 'omniauth'
 gem 'httparty'
 gem 'savon'
+gem 'databasedotcom'
 
 group :development do
   	gem 'rspec-rails', '2.5.0'
