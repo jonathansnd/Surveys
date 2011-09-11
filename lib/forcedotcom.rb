@@ -10,7 +10,7 @@ module OmniAuth
       def initialize(app, consumer_key = nil, consumer_secret = nil, options = {}, &block)
         client_options = {
           :site => 'https://login.salesforce.com',
-          :authorize_path => '/services/oauth2/authorize',
+          :authorize_path => '/services/oauth2/authorize?display=touch',
           :access_token_path => '/services/oauth2/token'
         }
 

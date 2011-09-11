@@ -5,6 +5,10 @@ SampleApp::Application.configure do
   ENV['full_host'] = "https://cloudsurvey.heroku.com"
   ENV['sfdc_consumer_key'] = "3MVG9y6x0357HlecoJl08HiRMZ6nuVlyHPzq5U2ItDd.DA9_pPdlHEAD.5EgZraV2y1zKw_JSjfLBaxUuIXCx"
   ENV['sfdc_consumer_secret'] = "6910124392166051138"  
+
+  ENV['DATABASEDOTCOM_CLIENT_ID'] = "3MVG9y6x0357HlecoJl08HiRMZ6nuVlyHPzq5U2ItDd.DA9_pPdlHEAD.5EgZraV2y1zKw_JSjfLBaxUuIXCx"
+  ENV['DATABASEDOTCOM_CLIENT_SECRET'] = "6910124392166051138"  
+
   # The production environment is meant for finished, "live" apps.
   # Code is not reloaded between requests
   config.cache_classes = true
