@@ -26,7 +26,7 @@
 	    <% if signed_in? %>
 	    <ul class="nav secondary-nav" style="margin-right: 25px;">
 	    	<li>
-	    		<%= link_to  image_tag(current_user.thumbnail+"?oauth_token="+serviceauth.token , :alt => current_user.name, :height => '25', :width => '25'), current_user,:style => 'padding:7px 0 0px 0;margin:0;' %>
+	    		<%= link_to  image_tag(current_user.thumbnail+"?oauth_token="+serviceauth.token , :alt => current_user.name, :height => '25', :width => '25', :style => 'border-radius:3px;'), current_user,:style => 'padding:7px 0 0px 0;margin:0;' %>
 	    </td>
 	    	</li>
 
