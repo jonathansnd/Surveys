@@ -31,13 +31,11 @@
 			<% @resp["records"].each do |record| %>
 				<tr style="background:#ffffff" onMouseOver="this.style.background='#eeeeee';" onMouseOut="this.style.background='#ffffff';">
 					<td style="width:18%;">
-						<table style="width:100%;margin:0;">
-							<tr>
-								<td style="width:50%;padding:0;margin:0;"><%= link_to 'Edit', builder_path(:surveyid => record['Id']), :class => '' %></td>
-								<td style="width:50%;padding:0;margin:0;"><% if(record['Preview_URL__c'] != nil) %> <a href="<%= record['Preview_URL__c'] %>" class="" target="_blank">Preview</a><% end %> </td>
-								<td style="width:50%;padding:0;margin:0;"><%= link_to 'Publish', reports_builder_path(:surveyid => record['Id']), :class => '' %></td>
-							</tr>
-						</table>
+						<div class="surveyactions">
+							<%= link_to 'Edit', builder_path(:surveyid => record['Id']), :class => '' %>
+							<% if(record['Preview_URL__c'] != nil) %> | <a href="<%= record['Preview_URL__c'] %>" class="" target="_blank">Preview</a> <% end %>
+							| <%= link_to 'Publish', reports_builder_path(:surveyid => record['Id']), :class => '' %>
+						</div>
 					</td>
 					<td style="width:34%;"><a href="<%= @serviceauth.instance_url %>/<%=record['Id']%>" target="_blank" style="font-weight:bold;text-decoration:underline;"><%= record["Name"] %></a></td>
 					<td style="width:12%;"><%= record['Status__c'] %></td>
@@ -65,11 +63,9 @@
 				<% @respPublished["records"].each do |record| %>
 					<tr style="background:#ffffff" onMouseOver="this.style.background='#eeeeee';" onMouseOut="this.style.background='#ffffff';">
 						<td style="width:15%;">
-							<table style="width:100%;margin:0;">
-								<tr>
-									<td style="width:50%;padding:0;margin:0;"><% if(record['Response_Object_Prefix__c'] != nil) %> <a href="<%= @serviceauth.instance_url %>/<%= record['Response_Object_Prefix__c'] %>" class="btn" target="_blank">View Responses</a><% end %> </td>
-								</tr>
-							</table>
+							<div class="surveyactions">
+								<% if(record['Response_Object_Prefix__c'] != nil) %> <a href="<%= @serviceauth.instance_url %>/<%= record['Response_Object_Prefix__c'] %>" class="" target="_blank">View Responses</a><% end %>
+							</div>
 						</td>
 						<td style="width:37%;"><a href="<%= @serviceauth.instance_url %>/<%=record['Id']%>" target="_blank" style="font-weight:bold;text-decoration:underline;"><%= record["Name"] %></a></td>
 						<td style="width:16%;"><%= record['Status__c'] %></td>
@@ -102,12 +98,11 @@
 				<% @respShared["records"].each do |record| %>
 					<tr style="background:#ffffff" onMouseOver="this.style.background='#eeeeee';" onMouseOut="this.style.background='#ffffff';">
 						<td style="width:15%;">
-							<table style="width:100%;margin:0;">
-								<tr>
-									<td style="width:50%;padding:0;margin:0;"><%= link_to 'Edit', builder_path(:surveyid => record['Id']), :class => 'btn' %></td>
-									<td style="width:50%;padding:0;margin:0;"><% if(record['Preview_URL__c'] != nil) %> <a href="<%= record['Preview_URL__c'] %>" class="btn" target="_blank">Preview</a><% end %> </td>
-								</tr>
-							</table>
+							<div class="surveyactions">
+								<%= link_to 'Edit', builder_path(:surveyid => record['Id']), :class => '' %>
+								<% if(record['Preview_URL__c'] != nil) %> | <a href="<%= record['Preview_URL__c'] %>" class="" target="_blank">Preview</a>
+								<% end %>
+							</div>
 						</td>
 						<td style="width:37%;"><a href="<%= @serviceauth.instance_url %>/<%=record['Id']%>" target="_blank" style="font-weight:bold;text-decoration:underline;"><%= record["Name"] %></a></td>
 						<td style="width:16%;"><%= record['Status__c'] %></td>

@@ -52,3 +52,9 @@
   font-size: 12px;
   list-style: square;
 }
+
+.surveyactions a{
+  color:#015BA7;
+  text-decoration:underline;
+  
+}
